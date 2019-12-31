@@ -10,31 +10,13 @@ void setup() {
 }
 
 static char* msg = "SHINY BUTTHOLE";
-int txtLen = strlen(msg);
-int loc = NUM_LEDS - 1;
+int msgLen = strlen(msg);
+int col = NUM_LEDS - 1;
 
 void loop() {
-  // char* msgChar = msg;
-  // int txtStart = loc;
-  // while(*msgChar) {
-  //   int charSize = Ticker::writeChar(txtStart, CRGB::Black, *msgChar);
-  //   txtStart += charSize + 1;
-  //   msgChar++;
-  // }
-
-  // msgChar = msg;
-  // //loc = (loc - 1) % (33 * 5);
-  // loc = (loc < -(txtLen * 5)) ? NUM_LEDS - 1 : loc - 1;
-  // txtStart = loc;
-  // while(*msgChar) {
-  //   int charSize = Ticker::writeChar(txtStart, CRGB::White, *msgChar);
-  //   txtStart += charSize + 1;
-  //   msgChar++;
-  // }
-
-  Ticker::writeString(loc, CRGB::Black, msg);
-  loc = (loc < -(txtLen * 5)) ? NUM_LEDS - 1 : loc - 1;
-  Ticker::writeString(loc, CRGB::White, msg);
+  Ticker::writeString(col, CRGB::Black, msg);
+  col = (col < -(msgLen * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
+  Ticker::writeString(col, CRGB::White, msg);
   FastLED.show();
-  FastLED.delay(1000/15);
+  FastLED.delay(1000/FRAMES_PER_SECOND);
 }

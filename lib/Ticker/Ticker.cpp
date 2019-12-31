@@ -2,6 +2,22 @@
 
 namespace Ticker {
 
+#define LED_TYPE    WS2812B
+#define COLOR_ORDER GRB
+
+#define BRIGHTNESS           8 
+
+static const uint8 char_data[6][108] = {
+{ 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1 },
+{ 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 },
+{ 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0 },
+{ 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0 },
+{ 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0 },
+{ 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1 }
+};
+
+static const uint8 ofs[27] = {0, 4, 8, 12, 16, 20, 24, 28, 32, 35, 39, 43, 47, 52, 57, 61, 65, 69, 73, 77, 80, 84, 89, 94, 99, 104, 108};
+
 static CRGB leds[NUM_STRIPS][NUM_LEDS];
 
 void setup() {
@@ -15,18 +31,18 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
 }
 
-int writeChar(int loc, CRGB color, char c) {
+int writeChar(int col, CRGB color, char c) {
   if (c == ' ') {
     return 2;
   }
   uint8 charDefOfs = ofs[c - 'A'];
   uint8 charDefSize = ofs[c - 'A' + 1] - charDefOfs;
-  for (uint8 r = 0; r < NUM_STRIPS; r++) {
-    for (uint8 c = 0; c < charDefSize; c++) {
-      int pixelLoc = c + loc;
-      if (pixelLoc >= 0 && pixelLoc < NUM_LEDS) {
-        if (char_data[r][c + charDefOfs]) {
-          leds[r][pixelLoc] = color;
+  for (uint8 row = 0; row < NUM_STRIPS; row++) {
+    for (uint8 charCol = 0; charCol < charDefSize; charCol++) {
+      int ledCol = charCol + col;
+      if (ledCol >= 0 && ledCol < NUM_LEDS) {
+        if (char_data[row][charCol + charDefOfs]) {
+          leds[row][ledCol] = color;
         }
       }
     }
@@ -34,9 +50,9 @@ int writeChar(int loc, CRGB color, char c) {
   return charDefSize;
 }
 
-int writeString(int loc, CRGB color, char* msg) {
+int writeString(int col, CRGB color, char* msg) {
   char* msgChar = msg;
-  int charStart = loc;
+  int charStart = col;
   while(*msgChar) {
     int charSize = writeChar(charStart, color, *msgChar);
     charStart += charSize + 1;
