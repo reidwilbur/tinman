@@ -16,15 +16,16 @@ int col = NUM_LEDS - 1;
 String msgStr;
 
 void loop() {
-  String newMsgStr = TickerServer::loop();
-  if (msgStr != newMsgStr) {
-    msgStr = newMsgStr;
+  TickerServer::loop();
+  TickerServer::TickerConfig& config = TickerServer::getConfig();
+  if (msgStr != config.message) {
+    msgStr = config.message;
     col = NUM_LEDS - 1;
     Ticker::clear();
   }
-  Ticker::writeString(col, TickerServer::backgroundColor(), msgStr);
+  Ticker::writeString(col, config.bkgColor, msgStr);
   col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
-  Ticker::writeString(col, TickerServer::textColor(), msgStr);
+  Ticker::writeString(col, config.textColor, msgStr);
   FastLED.show();
-  FastLED.delay(1000/FRAMES_PER_SECOND);
+  FastLED.delay(1000/config.speed);
 }

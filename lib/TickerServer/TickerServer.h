@@ -5,11 +5,16 @@ namespace TickerServer {
 
 void setup();
 
-String& loop();
+void loop();
 
-uint32 textColor();
+struct TickerConfig {
+  String message;
+  uint32 textColor;
+  uint32 bkgColor;
+  uint32 speed;
+};
 
-uint32 backgroundColor();
+TickerConfig& getConfig();
 
 }
 

@@ -76,6 +76,9 @@ void sanitize(String& msg) {
   while (i < msg.length()) {
     if (msg[i] == ' ' || (msg[i] - 'A' >= 0 && msg[i] - 'A' <= 'Z')) {
       i++;
+    } else if (msg[i] == '+') {
+      msg[i] = ' ';
+      i++;
     } else {
       msg.remove(i, 1);
     }
