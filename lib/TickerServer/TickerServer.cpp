@@ -4,16 +4,9 @@
 
 #include "TickerServer.h"
 #include "Ticker.h"
+#include "NetworkConfig.h"
 
 namespace TickerServer {
-
-IPAddress ip(192, 168, 1, 110);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
-IPAddress dns(192, 168, 1, 1);
-
-static const char* ssid = "furious office 2G";
-static const char* pswd = "";
 
 ESP8266WebServer server(80);
 
