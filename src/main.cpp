@@ -1,22 +1,30 @@
 #include "Ticker.h"
+#include "TickerServer.h"
 
 void setup() {
+  Serial.begin(115200);
   delay(3001); // 3 second delay for recovery
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
   Ticker::setup();
+  TickerServer::setup();
 }
 
-static char* msg = "SHINY BUTTHOLE";
-int msgLen = strlen(msg);
 int col = NUM_LEDS - 1;
+String msgStr;
 
 void loop() {
-  Ticker::writeString(col, CRGB::Black, msg);
-  col = (col < -(msgLen * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
-  Ticker::writeString(col, CRGB::White, msg);
+  String newMsgStr = TickerServer::loop();
+  if (msgStr != newMsgStr) {
+    msgStr = newMsgStr;
+    col = NUM_LEDS - 1;
+    Ticker::clear();
+  }
+  Ticker::writeString(col, CRGB::Black, msgStr);
+  col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
+  Ticker::writeString(col, CRGB::White, msgStr);
   FastLED.show();
   FastLED.delay(1000/FRAMES_PER_SECOND);
 }

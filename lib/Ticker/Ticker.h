@@ -18,6 +18,12 @@ int writeChar(int col, CRGB color, char c);
 
 int writeString(int col, CRGB color, char* msg);
 
+int writeString(int col, CRGB color, const String& msg);
+
+void sanitize(String& msg);
+
+void clear();
+
 }
 
 #endif

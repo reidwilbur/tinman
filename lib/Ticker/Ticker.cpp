@@ -60,4 +60,30 @@ int writeString(int col, CRGB color, char* msg) {
   }
   return charStart;
 }
+
+int writeString(int col, CRGB color, const String& msg) {
+  int charStart = col;
+  for (const char* c = msg.begin(); c != msg.end(); c++) {
+    int charSize = writeChar(charStart, color, *c);
+    charStart += charSize + 1;
+  }
+  return charStart;
+}
+
+void sanitize(String& msg) {
+  msg.toUpperCase();
+  unsigned int i = 0;
+  while (i < msg.length()) {
+    if (msg[i] == ' ' || (msg[i] - 'A' >= 0 && msg[i] - 'A' <= 'Z')) {
+      i++;
+    } else {
+      msg.remove(i, 1);
+    }
+  }
+}
+
+void clear() {
+  FastLED.clear();
+}
+
 }
