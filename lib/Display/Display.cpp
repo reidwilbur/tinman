@@ -1,6 +1,6 @@
-#include "Ticker.h"
+#include "Display.h"
 
-namespace Ticker {
+namespace Display {
 
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB

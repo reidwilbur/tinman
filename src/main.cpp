@@ -1,4 +1,4 @@
-#include "Ticker.h"
+#include "Display.h"
 #include "TickerServer.h"
 
 void setup() {
@@ -8,7 +8,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
-  Ticker::setup();
+  Display::setup();
   TickerServer::setup();
 }
 
@@ -21,11 +21,11 @@ void loop() {
   if (msgStr != config.message) {
     msgStr = config.message;
     col = NUM_LEDS - 1;
-    Ticker::clear();
+    Display::clear();
   }
-  Ticker::writeString(col, config.bkgColor, msgStr);
+  Display::writeString(col, config.bkgColor, msgStr);
   col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
-  Ticker::writeString(col, config.textColor, msgStr);
+  Display::writeString(col, config.textColor, msgStr);
   FastLED.show();
   FastLED.delay(1000/config.speed);
 }

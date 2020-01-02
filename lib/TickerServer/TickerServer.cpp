@@ -3,7 +3,7 @@
 #include <ESP8266WebServer.h>
 
 #include "TickerServer.h"
-#include "Ticker.h"
+#include "Display.h"
 #include "NetworkConfig.h"
 
 namespace TickerServer {
@@ -55,7 +55,7 @@ void handleMsg() {
   config.message = server.arg("plain");
   if (config.message.startsWith("msg=")) {
     config.message = config.message.substring(4);
-    Ticker::sanitize(config.message);
+    Display::sanitize(config.message);
     server.send(200, "text/plain", "OK\n");
   } else {
     server.send(400, "text/plain", "Bad request");

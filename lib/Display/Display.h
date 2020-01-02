@@ -1,11 +1,11 @@
-#ifndef __Ticker_h_INCLUDED__
-#define __Ticker_h_INCLUDED__
+#ifndef __Display_h_INCLUDED__
+#define __Display_h_INCLUDED__
 
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 
 #include <FastLED.h>
 
-namespace Ticker {
+namespace Display {
 
 #define NUM_LEDS           36
 #define NUM_STRIPS          6
