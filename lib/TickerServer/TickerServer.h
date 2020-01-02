@@ -7,6 +7,10 @@ void setup();
 
 String& loop();
 
+uint32 textColor();
+
+uint32 backgroundColor();
+
 }
 
 #endif

@@ -22,9 +22,9 @@ void loop() {
     col = NUM_LEDS - 1;
     Ticker::clear();
   }
-  Ticker::writeString(col, CRGB::Black, msgStr);
+  Ticker::writeString(col, TickerServer::backgroundColor(), msgStr);
   col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
-  Ticker::writeString(col, CRGB::White, msgStr);
+  Ticker::writeString(col, TickerServer::textColor(), msgStr);
   FastLED.show();
   FastLED.delay(1000/FRAMES_PER_SECOND);
 }

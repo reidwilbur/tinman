@@ -13,10 +13,14 @@ static const char* pswd = "";
 ESP8266WebServer server(80);
 
 String tickerMsg;
+uint32 txtColor = 0xffffff;
+uint32 bkgColor = 0x0;
 
 void handleRoot();
 void handleNotFound();
 void handleMsg();
+void handleClr();
+void handleBkgClr();
 
 void setup() {
   WiFi.begin(ssid, pswd);
@@ -27,6 +31,8 @@ void setup() {
   Serial.println(WiFi.localIP());
   server.on("/", handleRoot);
   server.on("/msg", HTTP_POST, handleMsg);
+  server.on("/clr", HTTP_POST, handleClr);
+  server.on("/bkgclr", HTTP_POST, handleBkgClr);
   server.onNotFound(handleNotFound);
   server.begin();
 }
@@ -45,11 +51,44 @@ void handleNotFound() {
 }
 
 void handleMsg() {
+  Serial.println("handleMsg");
   Serial.println(server.arg("plain"));
   tickerMsg = server.arg("plain");
   Ticker::sanitize(tickerMsg);
   Serial.println(tickerMsg);
   server.send(200, "text/plain", "OK\n");
+}
+
+void handleClr() {
+  Serial.println("handleClr");
+  Serial.println(server.arg("plain"));
+  String clr = server.arg("plain");
+  if (clr.length() == 8) {
+    sscanf(clr.c_str(), "0x%x", &txtColor);
+    server.send(200, "text/plain", "OK");
+  } else {
+    server.send(400, "text/plain", "Bad request");
+  }
+}
+
+void handleBkgClr() {
+  Serial.println("handleBkClr");
+  Serial.println(server.arg("plain"));
+  String clr = server.arg("plain");
+  if (clr.length() == 8) {
+    sscanf(clr.c_str(), "0x%x", &bkgColor);
+    server.send(200, "text/plain", "OK");
+  } else {
+    server.send(400, "text/plain", "Bad request");
+  }
+}
+
+uint32 textColor() {
+  return txtColor;
+}
+
+uint32 backgroundColor() {
+  return bkgColor;
 }
 
 }
