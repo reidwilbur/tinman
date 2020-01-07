@@ -10,7 +10,7 @@ namespace Display {
 #define NUM_LEDS           36
 #define NUM_STRIPS          6
 #define FRAMES_PER_SECOND  15
-#define MAX_CHAR_WIDTH      5
+#define MAX_CHAR_WIDTH      6
 
 void setup();
 
