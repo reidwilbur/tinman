@@ -1,5 +1,5 @@
 #include "Display.h"
-#include "TickerServer.h"
+#include "DisplayConfigServer.h"
 
 void setup() {
   Serial.begin(115200);
@@ -9,23 +9,31 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   Display::setup();
-  TickerServer::setup();
+  DisplayConfigServer::setup();
 }
 
 int col = NUM_LEDS - 1;
 String msgStr;
 
 void loop() {
-  TickerServer::loop();
-  TickerServer::TickerConfig& config = TickerServer::getConfig();
-  if (msgStr != config.message) {
-    msgStr = config.message;
-    col = NUM_LEDS - 1;
-    Display::clear();
+  DisplayConfigServer::loop();
+  DisplayConfigServer::DisplayConfig& config = DisplayConfigServer::getConfig();
+  switch (config.mode) {
+    case DisplayConfigServer::TEXT_SCROLL:
+      if (msgStr != config.message) {
+        msgStr = config.message;
+        col = NUM_LEDS - 1;
+        Display::clear();
+      }
+      Display::writeString(col, config.bkgColor, msgStr);
+      col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
+      Display::writeString(col, config.textColor, msgStr);
+      break;
+    case DisplayConfigServer::DIGITAL_RAIN:
+      Display::stepDigitalRain();
+      break;
   }
-  Display::writeString(col, config.bkgColor, msgStr);
-  col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
-  Display::writeString(col, config.textColor, msgStr);
   FastLED.show();
   FastLED.delay(1000/config.speed);
+  //FastLED.delay(85);
 }

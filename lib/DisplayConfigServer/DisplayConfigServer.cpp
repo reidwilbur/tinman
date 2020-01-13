@@ -2,15 +2,15 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-#include "TickerServer.h"
+#include "DisplayConfigServer.h"
 #include "Display.h"
 #include "NetworkConfig.h"
 
-namespace TickerServer {
+namespace DisplayConfigServer {
 
 ESP8266WebServer server(80);
 
-static TickerConfig config = { "", 0xffffff, 0x0, 15 };
+static DisplayConfig config = { "", 0xffffff, 0x0, 15, TEXT_SCROLL };
 
 void handleRoot();
 void handleNotFound();
@@ -18,6 +18,8 @@ void handleMsg();
 void handleClr();
 void handleBkgClr();
 void handleSpeed();
+void handleMode();
+
 String urldecode(String);
 unsigned char h2int(char);
 
@@ -35,6 +37,7 @@ void setup() {
   server.on("/clr", HTTP_POST, handleClr);
   server.on("/bkgclr", HTTP_POST, handleBkgClr);
   server.on("/speed", HTTP_POST, handleSpeed);
+  server.on("/mode", HTTP_POST, handleMode);
   server.onNotFound(handleNotFound);
   server.begin();
 }
@@ -102,7 +105,29 @@ void handleSpeed() {
   }
 }
 
-TickerConfig& getConfig() {
+void handleMode() {
+  Serial.println("handleMode");
+  Serial.println(server.arg("plain"));
+  String mode = server.arg("plain");
+  if (mode.startsWith("mode=")) {
+    mode = urldecode(mode.substring(5));
+    mode.toUpperCase();
+    if (mode == String("TEXT_SCROLL")) {
+      config.mode = TEXT_SCROLL;
+      server.send(200, "text/plain", "OK\n");
+    } else if (mode == String("DIGITAL_RAIN")) {
+      config.mode = DIGITAL_RAIN;
+      server.send(200, "text/plain", "OK\n");
+    } else {
+      server.send(400, "text/plain", "Bad request");
+    }
+  } else {
+    server.send(400, "text/plain", "Bad request");
+  }
+  Serial.println(config.message);
+}
+
+DisplayConfig& getConfig() {
   return config;
 }
 

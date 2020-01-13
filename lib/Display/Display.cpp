@@ -5,7 +5,10 @@ namespace Display {
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
-#define BRIGHTNESS           8 
+#define BRIGHTNESS 64
+
+static const CRGB RAIN_DROP = CRGB(175,255,175);
+static const CRGB RAIN_TAIL = CRGB(27,130,39);
 
 static const uint8 char_data[6][472] = {
 { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
@@ -21,23 +24,23 @@ static const uint ofs[] = {0,2,6,12,18,24,30,32,35,38,44,50,53,57,59,63,69,73,79
 static CRGB leds[NUM_STRIPS][NUM_LEDS];
 
 void setup() {
-  FastLED.addLeds<LED_TYPE, D2, COLOR_ORDER>(leds[5], NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, D3, COLOR_ORDER>(leds[4], NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, D4, COLOR_ORDER>(leds[3], NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, D5, COLOR_ORDER>(leds[2], NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, D6, COLOR_ORDER>(leds[1], NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, D7, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, D2, COLOR_ORDER>(leds[5], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.addLeds<LED_TYPE, D3, COLOR_ORDER>(leds[4], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.addLeds<LED_TYPE, D4, COLOR_ORDER>(leds[3], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.addLeds<LED_TYPE, D5, COLOR_ORDER>(leds[2], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.addLeds<LED_TYPE, D6, COLOR_ORDER>(leds[1], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.addLeds<LED_TYPE, D7, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
 
   FastLED.setBrightness(BRIGHTNESS);
 }
 
 int writeChar(int col, CRGB color, char c) {
   if (c == ' ') {
-    return 2;
+    return 3;
   }
   uint charDefOfs = ofs[c - '!'];
   uint charDefSize = ofs[c - '!' + 1] - charDefOfs;
-  for (uint8 row = 0; row < NUM_STRIPS; row++) {
+  for (uint8_t row = 0; row < NUM_STRIPS; row++) {
     for (uint charCol = 0; charCol < charDefSize; charCol++) {
       int ledCol = charCol + col;
       if (ledCol >= 0 && ledCol < NUM_LEDS) {
@@ -79,6 +82,39 @@ void sanitize(String& msg) {
       msg.remove(i, 1);
     }
   }
+}
+
+void stepDigitalRain() {
+  for (int row=NUM_STRIPS - 1; row>=0; row--)
+  {
+    for (int col=0; col<NUM_LEDS; col++)
+    {
+      if (leds[row][col] == RAIN_DROP)
+      {
+        leds[row][col] = RAIN_TAIL;
+        if (row < NUM_STRIPS - 1) { 
+          leds[row + 1][col] = RAIN_DROP; 
+        }
+      }
+      if (leds[row][col].g != 255) {
+        leds[row][col].nscale8(192);
+      }
+    }
+  }
+
+  for (int col=0; col<NUM_LEDS; col++) {
+    bool noCode = true;
+    for (int row=0; row<NUM_STRIPS; row++) {
+      if (leds[row][col] == RAIN_DROP) {
+        noCode = false;
+        break;
+      }
+    }
+    if (noCode && random(24) == 0) {
+      leds[0][col] = RAIN_DROP;
+    }
+  }
+
 }
 
 void clear() {

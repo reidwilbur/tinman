@@ -20,6 +20,8 @@ int writeString(int col, CRGB color, char* msg);
 
 int writeString(int col, CRGB color, const String& msg);
 
+void stepDigitalRain();
+
 void sanitize(String& msg);
 
 void clear();
