@@ -1,5 +1,5 @@
-#include "Display.h"
-#include "DisplayConfigServer.h"
+#include "display/Display.h"
+#include "configserver/DisplayConfigServer.h"
 
 #define ONBOARD_LED 2
 
@@ -14,7 +14,7 @@ void setup() {
   DisplayConfigServer::setup();
 }
 
-int col = NUM_LEDS - 1;
+int col = Display::width() - 1;
 String msgStr;
 
 void loop() {
@@ -24,11 +24,11 @@ void loop() {
     case DisplayConfigServer::TEXT_SCROLL:
       if (msgStr != config.message) {
         msgStr = config.message;
-        col = NUM_LEDS - 1;
+        col = Display::width() - 1;
         Display::clear();
       }
       Display::writeString(col, config.bkgColor, msgStr);
-      col = (col < -(((int)msgStr.length()) * MAX_CHAR_WIDTH)) ? NUM_LEDS - 1 : col - 1;
+      col = (col < -(((int)msgStr.length()) * Display::maxCharWidth())) ? Display::width() - 1 : col - 1;
       Display::writeString(col, config.textColor, msgStr);
       break;
     case DisplayConfigServer::DIGITAL_RAIN:

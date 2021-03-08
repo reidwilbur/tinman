@@ -1,28 +1,16 @@
 #include <Arduino.h>
 
-#ifdef PROJECT_ESP32
-  #include <WiFi.h>
-  #include <WebServer.h>
-#endif
+#include <WiFi.h>
+#include <WebServer.h>
+#include <mdns.h>
 
-#ifdef PROJECT_ESP8266
-  #include <ESP8266WiFi.h>
-  #include <ESP8266WebServer.h>
-#endif
-
-#include "DisplayConfigServer.h"
-#include "Display.h"
-#include "NetworkConfig.h"
+#include "configserver/DisplayConfigServer.h"
+#include "display/Display.h"
+#include "configserver/NetworkConfig.h"
 
 namespace DisplayConfigServer {
 
-#ifdef PROJECT_ESP32
-  WebServer server(80);
-#endif
-
-#ifdef PROJECT_ESP8266
-  ESP8266WebServer server(80);
-#endif
+WebServer server(80);
 
 static DisplayConfig config = { "", 0xffffff, 0x0, 15, TEXT_SCROLL };
 
@@ -39,7 +27,6 @@ unsigned char h2int(char);
 
 void setup() {
   WiFi.disconnect();
-  WiFi.config(ip, gateway, subnet, dns);
   WiFi.begin(ssid, pswd);
   while (WiFi.status() != WL_CONNECTED) {
       delay(100);
@@ -54,6 +41,22 @@ void setup() {
   server.on("/mode", HTTP_POST, handleMode);
   server.onNotFound(handleNotFound);
   server.begin();
+
+  esp_err_t res = ESP_FAIL;
+  while(res != ESP_OK) {
+    delay(100);
+    res = mdns_init();
+  }
+  res = mdns_hostname_set("tinman");
+  if (res != ESP_OK) {
+    Serial.print("mdns hostname set");
+    Serial.println(res);
+  }
+  res = mdns_service_add("tinman", "_http", "_tcp", 80, {}, 0);
+  if (res != ESP_OK) {
+    Serial.print("mdns add svc failed");
+    Serial.println(res);
+  }
 }
 
 void loop() {
