@@ -1,12 +1,14 @@
 #include "Display.h"
 #include "DisplayConfigServer.h"
 
+#define ONBOARD_LED 2
+
 void setup() {
   Serial.begin(115200);
   delay(3001); // 3 second delay for recovery
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  pinMode(ONBOARD_LED, OUTPUT);
+  digitalWrite(ONBOARD_LED, LOW);
 
   Display::setup();
   DisplayConfigServer::setup();

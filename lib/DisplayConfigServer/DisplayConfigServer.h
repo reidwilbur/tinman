@@ -1,6 +1,8 @@
 #ifndef __DisplayConfigServer_h_INCLUDED__
 #define __DisplayConfigServer_h_INCLUDED__
 
+#include <stdint.h>
+
 namespace DisplayConfigServer {
 
 void setup();
@@ -11,9 +13,9 @@ enum Mode { DIGITAL_RAIN, TEXT_SCROLL };
 
 struct DisplayConfig {
   String message;
-  uint32 textColor;
-  uint32 bkgColor;
-  uint32 speed;
+  uint32_t textColor;
+  uint32_t bkgColor;
+  uint32_t speed;
   Mode mode;
 };
 

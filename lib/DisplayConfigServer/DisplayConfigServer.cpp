@@ -1,6 +1,14 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+
+#ifdef PROJECT_ESP32
+  #include <WiFi.h>
+  #include <WebServer.h>
+#endif
+
+#ifdef PROJECT_ESP8266
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WebServer.h>
+#endif
 
 #include "DisplayConfigServer.h"
 #include "Display.h"
@@ -8,7 +16,13 @@
 
 namespace DisplayConfigServer {
 
-ESP8266WebServer server(80);
+#ifdef PROJECT_ESP32
+  WebServer server(80);
+#endif
+
+#ifdef PROJECT_ESP8266
+  ESP8266WebServer server(80);
+#endif
 
 static DisplayConfig config = { "", 0xffffff, 0x0, 15, TEXT_SCROLL };
 
