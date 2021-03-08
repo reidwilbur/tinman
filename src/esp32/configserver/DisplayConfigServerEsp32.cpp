@@ -73,13 +73,14 @@ void handleNotFound() {
 
 void handleMsg() {
   Serial.println("handleMsg");
-  Serial.println(server.arg("plain"));
-  config.message = server.arg("plain");
-  if (config.message.startsWith("msg=")) {
-    config.message = urldecode(config.message.substring(4));
+  if (server.hasArg("msg")) {
+    Serial.println("ok request");
+    config.message = server.arg("msg");
+    config.message = urldecode(config.message);
     Display::sanitize(config.message);
     server.send(200, "text/plain", "OK\n");
   } else {
+    Serial.println("bad request");
     server.send(400, "text/plain", "Bad request");
   }
   Serial.println(config.message);
@@ -87,58 +88,64 @@ void handleMsg() {
 
 void handleClr() {
   Serial.println("handleClr");
-  Serial.println(server.arg("plain"));
-  String clr = server.arg("plain");
-  int fields = sscanf(clr.c_str(), "clr=0x%x", &config.textColor);
+  String clr = server.arg("clr");
+  int fields = sscanf(clr.c_str(), "0x%x", &config.textColor);
   if (fields == 1) {
+    Serial.println("ok request");
     server.send(200, "text/plain", "OK\n");
   } else {
+    Serial.println("bad request");
     server.send(400, "text/plain", "Bad request");
   }
 }
 
 void handleBkgClr() {
   Serial.println("handleBkClr");
-  Serial.println(server.arg("plain"));
-  String clr = server.arg("plain");
-  int fields = sscanf(clr.c_str(), "clr=0x%x", &config.bkgColor);
+  String clr = server.arg("bkgclr");
+  int fields = sscanf(clr.c_str(), "0x%x", &config.bkgColor);
   if (fields == 1) {
+    Serial.println("ok request");
     server.send(200, "text/plain", "OK\n");
   } else {
+    Serial.println("bad request");
     server.send(400, "text/plain", "Bad request");
   }
 }
 
 void handleSpeed() {
   Serial.println("handleSpeed");
-  Serial.println(server.arg("plain"));
-  String speed = server.arg("plain");
-  int fields = sscanf(speed.c_str(), "speed=%u", &config.speed);
+  String speed = server.arg("speed");
+  int fields = sscanf(speed.c_str(), "%u", &config.speed);
   Serial.println(config.speed);
   if (fields == 1) {
+    Serial.println("ok request");
     server.send(200, "text/plain", "OK\n");
   } else {
+    Serial.println("bad request");
     server.send(400, "text/plain", "Bad request");
   }
 }
 
 void handleMode() {
   Serial.println("handleMode");
-  Serial.println(server.arg("plain"));
-  String mode = server.arg("plain");
-  if (mode.startsWith("mode=")) {
-    mode = urldecode(mode.substring(5));
+  if (server.hasArg("mode")) {
+    String mode = server.arg("mode");
+    mode = urldecode(mode);
     mode.toUpperCase();
     if (mode == String("TEXT_SCROLL")) {
       config.mode = TEXT_SCROLL;
+      Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
     } else if (mode == String("DIGITAL_RAIN")) {
       config.mode = DIGITAL_RAIN;
+      Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
     } else {
+      Serial.println("bad request");
       server.send(400, "text/plain", "Bad request");
     }
   } else {
+    Serial.println("bad request");
     server.send(400, "text/plain", "Bad request");
   }
   Serial.println(config.message);

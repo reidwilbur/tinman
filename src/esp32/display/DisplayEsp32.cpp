@@ -105,7 +105,6 @@ void sanitize(String& msg) {
 }
 
 void stepDigitalRain() {
-  Serial.println("stepDigitalRain");
 }
 
 void clear() {
