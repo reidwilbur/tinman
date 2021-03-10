@@ -2,14 +2,15 @@
 
 namespace Display {
 
-#define NUM_LEDS           40
+#define LED_WIDTH          40
 #define FRAMES_PER_SECOND  15
 #define MAX_CHAR_WIDTH      6
+#define LED_HEIGHT          8
 
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
-#define BRIGHTNESS 64
+#define BRIGHTNESS 32
 #define NUM_STRIPS 6
 
 static const CRGB RAIN_DROP = CRGB(175,255,175);
@@ -26,21 +27,16 @@ static const uint8_t char_data[6][472] = {
 
 static const uint ofs[] = {0,2,6,12,18,24,30,32,35,38,44,50,53,57,59,63,69,73,79,85,91,97,103,109,115,121,123,126,130,135,139,144,151,157,163,169,175,181,187,193,199,203,208,214,220,226,232,238,244,250,256,262,268,274,280,286,292,298,304,307,311,314,320,326,329,335,340,345,350,355,359,364,369,371,376,381,383,389,394,399,404,410,415,420,424,429,435,441,447,452,457,461,463,467,472};
 
-//static CRGB leds[NUM_STRIPS][NUM_LEDS];
+static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
 void setup() {
-  // FastLED.addLeds<LED_TYPE, D2, COLOR_ORDER>(leds[5], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
-  // FastLED.addLeds<LED_TYPE, D3, COLOR_ORDER>(leds[4], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
-  // FastLED.addLeds<LED_TYPE, D4, COLOR_ORDER>(leds[3], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
-  // FastLED.addLeds<LED_TYPE, D5, COLOR_ORDER>(leds[2], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
-  // FastLED.addLeds<LED_TYPE, D6, COLOR_ORDER>(leds[1], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
-  // FastLED.addLeds<LED_TYPE, D7, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection(TypicalLEDStrip);//.setDither(0);
+  FastLED.setBrightness(BRIGHTNESS);
 
-  // FastLED.setBrightness(BRIGHTNESS);
+  FastLED.addLeds<LED_TYPE, GPIO_NUM_23, COLOR_ORDER>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip);
 }
 
 int width() {
-  return NUM_LEDS;
+  return LED_WIDTH;
 }
 
 int maxCharWidth() {
@@ -51,46 +47,70 @@ int framesPerSecond() {
   return FRAMES_PER_SECOND;
 }
 
+uint rcToDispIdx(const uint row, const uint col) {
+  // this display is wired in zig zag pattern 
+  // with led index 0 in bottom left
+  //  7   8  23  24 ..
+  //  6   9  22  25 ..
+  //  .  ..  ..  .. ..
+  //  .  ..  ..  .. ..
+  //  1  14  17  30 ..
+  //  0  15  16  31 ..
+  //
+  // (row,col) for api assumes (0,0) in top left of display
+  // so need to map like below etc
+  // (0,0) = 7
+  // (1,0) = 6
+  // (6,0) = 1
+  // (7,0) = 0
+  //
+  // (0,1) = 8
+  // (1,1) = 9
+  // (6,1) = 14
+  // (7,1) = 15
+  return ((col & 1) == 0) 
+    ? col * LED_HEIGHT + row
+    : ((col + 1) * LED_HEIGHT) - 1 - row;
+}
+
 int writeChar(int col, CRGB color, char c) {
-  // if (c == ' ') {
-  //   return 3;
-  // }
-  // uint charDefOfs = ofs[c - '!'];
-  // uint charDefSize = ofs[c - '!' + 1] - charDefOfs;
-  // for (uint8_t row = 0; row < NUM_STRIPS; row++) {
-  //   for (uint charCol = 0; charCol < charDefSize; charCol++) {
-  //     int ledCol = charCol + col;
-  //     if (ledCol >= 0 && ledCol < NUM_LEDS) {
-  //       if (char_data[row][charCol + charDefOfs]) {
-  //         leds[row][ledCol] = color;
-  //       }
-  //     }
-  //   }
-  // }
-  // return charDefSize;
-  return 0;
+  if (c == ' ') {
+    return 3;
+  }
+  uint charDefOfs = ofs[c - '!'];
+  uint charDefSize = ofs[c - '!' + 1] - charDefOfs;
+  for (uint8_t row = 0; row < 6; row++) {
+    for (uint charCol = 0; charCol < charDefSize; charCol++) {
+      int ledCol = charCol + col;
+      if (ledCol >= 0 && ledCol < LED_WIDTH) {
+        if (char_data[row][charCol + charDefOfs]) {
+          uint ledIdx = rcToDispIdx(row + 1, ledCol);
+          leds[ledIdx] = color;
+        }
+      }
+    }
+  }
+  return charDefSize;
 }
 
 int writeString(int col, CRGB color, char* msg) {
-  // char* msgChar = msg;
-  // int charStart = col;
-  // while(*msgChar) {
-  //   int charSize = writeChar(charStart, color, *msgChar);
-  //   charStart += charSize;
-  //   msgChar++;
-  // }
-  // return charStart;
-  return 0;
+  char* msgChar = msg;
+  int charStart = col;
+  while(*msgChar) {
+    int charSize = writeChar(charStart, color, *msgChar);
+    charStart += charSize;
+    msgChar++;
+  }
+  return charStart;
 }
 
 int writeString(int col, CRGB color, const String& msg) {
-  // int charStart = col;
-  // for (const char* c = msg.begin(); c != msg.end(); c++) {
-  //   int charSize = writeChar(charStart, color, *c);
-  //   charStart += charSize;
-  // }
-  // return charStart;
-  return 0;
+  int charStart = col;
+  for (const char* c = msg.begin(); c != msg.end(); c++) {
+    int charSize = writeChar(charStart, color, *c);
+    charStart += charSize;
+  }
+  return charStart;
 }
 
 void sanitize(String& msg) {
@@ -104,11 +124,66 @@ void sanitize(String& msg) {
   }
 }
 
+void stepSparkle() {
+  int maxled = LED_WIDTH * LED_HEIGHT;
+  CRGB white = CRGB(255,255,255);
+  for (int idx = 0; idx < maxled; idx++) {
+    if (leds[idx].getLuma() == 0 && random8(255) > 200) {
+      leds[idx] = white;
+    } else if (leds[idx] == white && random8(255) > 127) {
+      leds[idx] = CHSV(random8(255), random8(255), 255);
+    } else {
+      leds[idx].nscale8(192);
+    }
+  }
+  // int maxled = LED_WIDTH * LED_HEIGHT;
+  // for (int idx = 0; idx < maxled; idx++) {
+  //   if (leds[idx].r == 0) {
+  //     leds[idx] = CRGB(60, 60, 60);
+  //     break;
+  //   }
+  // }
+}
+
 void stepDigitalRain() {
+  for (int row=LED_HEIGHT - 1; row>=0; row--)
+  {
+    for (int col=0; col<LED_WIDTH; col++)
+    {
+      uint ledIdx = rcToDispIdx(row, col);
+      if (leds[ledIdx] == RAIN_DROP)
+      {
+        leds[ledIdx] = RAIN_TAIL;
+        if (row < LED_HEIGHT - 1) {
+          uint nextHead = rcToDispIdx(row + 1, col);
+          leds[nextHead] = RAIN_DROP; 
+        }
+      }
+      if (leds[ledIdx].g != 255) {
+        leds[ledIdx].nscale8(192);
+      }
+    }
+  }
+
+  for (int col=0; col<LED_WIDTH; col++) {
+    bool noCode = true;
+    for (int row=0; row<NUM_STRIPS; row++) {
+      uint ledIdx = rcToDispIdx(row, col);
+      if (leds[ledIdx] == RAIN_DROP) {
+        noCode = false;
+        break;
+      }
+    }
+    if (noCode && random(24) == 0) {
+      uint ledIdx = rcToDispIdx(0, col);
+      leds[ledIdx] = RAIN_DROP;
+    }
+  }
+
 }
 
 void clear() {
-  //FastLED.clear();
+  FastLED.clear();
 }
 
 }
