@@ -102,6 +102,13 @@ void sanitize(String& msg) {
   }
 }
 
+void stepSparkle() {
+}
+
+void stepFire() {
+
+}
+
 void stepDigitalRain() {
   for (int row=NUM_STRIPS - 1; row>=0; row--)
   {

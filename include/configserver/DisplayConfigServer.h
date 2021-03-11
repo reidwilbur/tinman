@@ -9,7 +9,7 @@ void setup();
 
 void loop();
 
-enum Mode { DIGITAL_RAIN, TEXT_SCROLL };
+enum Mode { DIGITAL_RAIN, TEXT_SCROLL, SPARKLE, FIRE };
 
 struct DisplayConfig {
   String message;

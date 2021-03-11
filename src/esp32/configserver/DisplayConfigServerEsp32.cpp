@@ -140,6 +140,15 @@ void handleMode() {
       config.mode = DIGITAL_RAIN;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
+    } else if (mode == String("SPARKLE")) {
+      config.mode = SPARKLE;
+      Serial.println("ok request");
+      server.send(200, "text/plain", "OK\n");
+    } else if (mode == String("FIRE")) {
+      config.mode = FIRE;
+      config.speed = 10;
+      Serial.println("ok request");
+      server.send(200, "text/plain", "OK\n");
     } else {
       Serial.println("bad request");
       server.send(400, "text/plain", "Bad request");

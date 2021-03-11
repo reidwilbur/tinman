@@ -34,6 +34,12 @@ void loop() {
     case DisplayConfigServer::DIGITAL_RAIN:
       Display::stepDigitalRain();
       break;
+    case DisplayConfigServer::SPARKLE:
+      Display::stepSparkle();
+      break;
+    case DisplayConfigServer::FIRE:
+      Display::stepFire();
+      break;
   }
   FastLED.show();
   FastLED.delay(1000/config.speed);

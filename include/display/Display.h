@@ -21,6 +21,10 @@ int writeString(int col, CRGB color, const String& msg);
 
 void stepDigitalRain();
 
+void stepSparkle();
+
+void stepFire();
+
 void sanitize(String& msg);
 
 void clear();
