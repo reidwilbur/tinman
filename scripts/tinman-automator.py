@@ -12,6 +12,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--inmtg", action="store_true", help="Set ticker to in meeting text scroll")
     parser.add_argument("--rain", action="store_true", help="Set ticker to matrix digital rain")
+    parser.add_argument("--sparkle", action="store_true", help="Set ticker to sparkle")
+    parser.add_argument("--fire", action="store_true", help="Set ticker to doom fire")
     parser.add_argument("--checkmtg", action="store_true", help="Check if in mtg and set ticker to meeting text scroll")
     parser.add_argument("--clear", action="store_true", help="Clear text on ticker")
     args = parser.parse_args()
@@ -19,6 +21,10 @@ def main():
         in_mtg()
     elif args.rain:
         digital_rain()
+    elif args.sparkle:
+        sparkle()
+    elif args.fire:
+        fire()
     elif args.checkmtg:
         check_mtg()
     elif args.clear:
@@ -51,6 +57,16 @@ def in_mtg():
 def digital_rain():
     set_mode("DIGITAL_RAIN")
     set_speed(8)
+
+
+def sparkle():
+    set_mode("SPARKLE")
+    set_speed(25)
+
+
+def fire():
+    set_mode("FIRE")
+    set_speed(15)
 
 
 def set_mode(mode):
