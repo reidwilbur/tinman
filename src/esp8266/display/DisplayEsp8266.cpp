@@ -105,8 +105,10 @@ void sanitize(String& msg) {
 void stepSparkle() {
 }
 
-void stepFire() {
+void initFire() {
+}
 
+void stepFire() {
 }
 
 void stepDigitalRain() {

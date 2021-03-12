@@ -23,6 +23,8 @@ void stepDigitalRain();
 
 void stepSparkle();
 
+void initFire();
+
 void stepFire();
 
 void sanitize(String& msg);

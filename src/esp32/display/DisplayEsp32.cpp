@@ -27,7 +27,7 @@ static const uint8_t char_data[6][472] = {
 static const uint ofs[] = {0,2,6,12,18,24,30,32,35,38,44,50,53,57,59,63,69,73,79,85,91,97,103,109,115,121,123,126,130,135,139,144,151,157,163,169,175,181,187,193,199,203,208,214,220,226,232,238,244,250,256,262,268,274,280,286,292,298,304,307,311,314,320,326,329,335,340,345,350,355,359,364,369,371,376,381,383,389,394,399,404,410,415,420,424,429,435,441,447,452,457,461,463,467,472};
 
 static const CRGB firePalette[] = {
-  CRGB(7,7,7),
+  CRGB(0,0,0),
   CRGB(35,10,7),
   CRGB(103,20,7),
   CRGB(175,63,7),
@@ -214,10 +214,18 @@ void setFlame(uint row, uint col) {
   firePixels[row][col] = 7 - rand;
 }
 
+void initFire() {
+  for (uint row=0; row < LED_HEIGHT - 1; row++) {
+    for (uint col=0; col < LED_WIDTH; col++) {
+      firePixels[row][col] = 0;
+    }
+  }
+}
+
 void stepFire() {
   //fireDebugPrint();
-  for (uint col=0; col < LED_WIDTH; col++) {
-    for (uint row=0; row < LED_HEIGHT - 1; row++) {
+  for (uint row=0; row < LED_HEIGHT - 1; row++) {
+    for (uint col=0; col < LED_WIDTH; col++) {
       spreadFire(row, col);
     }
   }
