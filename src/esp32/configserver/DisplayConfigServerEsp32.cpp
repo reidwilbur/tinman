@@ -27,6 +27,7 @@ unsigned char h2int(char);
 
 void setup() {
   WiFi.disconnect();
+  WiFi.config(ip, gateway, subnet, dns);
   WiFi.begin(ssid, pswd);
   while (WiFi.status() != WL_CONNECTED) {
       delay(100);
@@ -134,14 +135,17 @@ void handleMode() {
     mode.toUpperCase();
     if (mode == String("TEXT_SCROLL")) {
       config.mode = TEXT_SCROLL;
+      config.speed = 30;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
     } else if (mode == String("DIGITAL_RAIN")) {
       config.mode = DIGITAL_RAIN;
+      config.speed = 15;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
     } else if (mode == String("SPARKLE")) {
       config.mode = SPARKLE;
+      config.speed = 25;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
     } else if (mode == String("FIRE")) {

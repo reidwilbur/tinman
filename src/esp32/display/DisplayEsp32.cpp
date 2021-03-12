@@ -10,7 +10,7 @@ namespace Display {
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
-#define BRIGHTNESS 32
+#define BRIGHTNESS 64 
 
 static const CRGB RAIN_DROP = CRGB(175,255,175);
 static const CRGB RAIN_TAIL = CRGB(27,130,39);
