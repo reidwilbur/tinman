@@ -12,6 +12,10 @@
     <string>tinman-automator.py</string>
     <string>--checkmtg</string>
   </array>
+  <key>StandardErrorPath</key>
+  <string>/tmp/tinman-automator.err</string>
+  <key>StandardOutPath</key>
+  <string>/tmp/tinman-automator.out</string>
   <key>StartCalendarInterval</key>
   <array>
     <dict>
