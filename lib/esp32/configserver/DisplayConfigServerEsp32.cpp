@@ -4,9 +4,9 @@
 #include <WebServer.h>
 #include <mdns.h>
 
-#include "configserver/DisplayConfigServer.h"
+#include "DisplayConfigServer.h"
 #include "display/Display.h"
-#include "configserver/NetworkConfig.h"
+#include "NetworkConfig.h"
 
 namespace DisplayConfigServer {
 
