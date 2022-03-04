@@ -49,19 +49,32 @@ Ticker::Ticker(Display::Display& display): DisplayRoutine(display) {
 }
 
 void Ticker::init() {
+  display.clear();
+}
 
+void sanitize(String& msg) {
+  unsigned int i = 0;
+  while (i < msg.length()) {
+    if (msg[i] >= ' ' && msg[i] <= '~') {
+      i++;
+    } else {
+      msg.remove(i, 1);
+    }
+  }
 }
 
 void Ticker::step(const DisplayConfigServer::DisplayConfig& config) {
-    if (msgStr != config.message) {
-        msgStr = config.message;
-        col = display.width() - 1;
-        display.clear();
-    }
-    writeString(display, col, config.bkgColor, msgStr);
-    int minColVal = -((int)msgStr.length() * MAX_CHAR_WIDTH);
-    col = (col < minColVal) ? display.width() - 1 : col - 1;
-    writeString(display, col, config.textColor, msgStr);
+  String configmsg = config.message;
+  sanitize(configmsg);
+  if (msgStr != configmsg) {
+    msgStr = configmsg;
+    col = display.width() - 1;
+    display.clear();
+  }
+  writeString(display, col, config.bkgColor, msgStr);
+  int minColVal = -((int)msgStr.length() * MAX_CHAR_WIDTH);
+  col = (col < minColVal) ? display.width() - 1 : col - 1;
+  writeString(display, col, config.textColor, msgStr);
 }
 
 }

@@ -23,12 +23,13 @@ void setup() {
 DisplayConfigServer::Mode lastMode = DisplayConfigServer::TEXT_SCROLL;
 Display::Display display = Display::Display();
 DisplayRoutine::Ticker ticker = DisplayRoutine::Ticker(display);
+DisplayRoutine::DoomFire doomfire = DisplayRoutine::DoomFire(display);
 
 void loop() {
   //ArduinoOTA.handle();
   DisplayConfigServer::loop();
   DisplayConfigServer::DisplayConfig& config = DisplayConfigServer::getConfig();
-  //bool modeChanged = lastMode != config.mode;
+  bool modeChanged = lastMode != config.mode;
   lastMode = config.mode;
   switch (config.mode) {
     case DisplayConfigServer::TEXT_SCROLL:
@@ -40,9 +41,16 @@ void loop() {
       // Display::writeString(col, config.bkgColor, msgStr);
       // col = (col < -(((int)msgStr.length()) * Display::maxCharWidth())) ? Display::width() - 1 : col - 1;
       // Display::writeString(col, config.textColor, msgStr);
-      Serial.println("calling ticker step");
+      if (modeChanged) {
+        ticker.init();
+      }
       ticker.step(config);
       break;
+    case DisplayConfigServer::FIRE:
+      if (modeChanged) {
+        doomfire.init();
+      }
+      doomfire.step(config);
     default:
       break;
     // case DisplayConfigServer::DIGITAL_RAIN:

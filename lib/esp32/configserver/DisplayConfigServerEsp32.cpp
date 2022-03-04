@@ -5,7 +5,6 @@
 #include <mdns.h>
 
 #include "DisplayConfigServer.h"
-#include "display/Display.h"
 #include "NetworkConfig.h"
 
 namespace DisplayConfigServer {
@@ -78,7 +77,6 @@ void handleMsg() {
     Serial.println("ok request");
     config.message = server.arg("msg");
     config.message = urldecode(config.message);
-    Display::sanitize(config.message);
     server.send(200, "text/plain", "OK\n");
   } else {
     Serial.println("bad request");

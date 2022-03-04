@@ -30,6 +30,18 @@ public:
     void step(const DisplayConfigServer::DisplayConfig& config);
 };
 
+class DoomFire: public DisplayRoutine {
+private:
+    String msgStr;
+    int col;
+public:
+    DoomFire(Display::Display& display);
+
+    void init();
+
+    void step(const DisplayConfigServer::DisplayConfig& config);
+};
+
 }
 
 #endif
