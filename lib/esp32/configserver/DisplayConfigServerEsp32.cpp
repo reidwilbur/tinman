@@ -12,7 +12,7 @@ namespace DisplayConfigServer {
 
 WebServer server(80);
 
-static DisplayConfig config = { "", 0xffffff, 0x0, 15, TEXT_SCROLL };
+static DisplayConfig config = { "", 0x007777, 0x0, 15, TEXT_SCROLL };
 
 void handleRoot();
 void handleNotFound();
