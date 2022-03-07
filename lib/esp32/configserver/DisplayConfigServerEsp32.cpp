@@ -151,7 +151,13 @@ void handleMode() {
       config.speed = 10;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
-    } else {
+    } else if (mode == String("KITT")) {
+      config.mode = KITT;
+      config.speed = 7;
+      Serial.println("ok request");
+      server.send(200, "text/plain", "OK\n");
+    }
+    else {
       Serial.println("bad request");
       server.send(400, "text/plain", "Bad request");
     }

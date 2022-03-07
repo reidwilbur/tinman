@@ -52,6 +52,17 @@ public:
     void step(const display_config_server::DisplayConfig& config);
 };
 
+class Kitt: public DisplayRoutine {
+private:
+    int lightIdx;
+    int dir;
+    void drawLight();
+public:
+    Kitt(display::Display& display);
+    void init();
+    void step(const display_config_server::DisplayConfig& config);
+};
+
 }
 
 #endif

@@ -15,6 +15,7 @@ Ticker ticker = Ticker(disp);
 Fire fire = Fire(disp);
 DigitalRain digitalrain = DigitalRain(disp);
 Sparkle sparkle = Sparkle(disp);
+Kitt kitt = Kitt(disp);
 
 void setup() {
   Serial.begin(115200);
@@ -32,6 +33,7 @@ DisplayRoutine& getRoutine(const DisplayConfig& config) {
     case Mode::DIGITAL_RAIN: return digitalrain;
     case Mode::SPARKLE: return sparkle;
     case Mode::FIRE: return fire;
+    case Mode::KITT: return kitt;
   }
 }
 
