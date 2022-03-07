@@ -2,7 +2,7 @@
 #include <FastLED.h>
 #include "DisplayRoutine.h"
 
-namespace DisplayRoutine {
+namespace display_routine {
 
 static const CRGB firePalette[] = {
   CRGB(0,0,0),
@@ -47,7 +47,7 @@ void setFlame(uint row, uint col) {
   firePixels[row][col] = 7 - rand;
 }
 
-DoomFire::DoomFire(Display::Display& display): DisplayRoutine(display) {
+DoomFire::DoomFire(display::Display& display): DisplayRoutine(display) {
 }
 
 void DoomFire::init() {
@@ -58,7 +58,7 @@ void DoomFire::init() {
   }
 }
 
-void DoomFire::step(const DisplayConfigServer::DisplayConfig& config) {
+void DoomFire::step(const display_config_server::DisplayConfig& config) {
   fireDebugPrint(display.width(), display.height());
   for (uint row=0; row < display.height() - 1; row++) {
     for (uint col=0; col < display.width(); col++) {

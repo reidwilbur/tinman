@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-namespace DisplayConfigServer {
+namespace display_config_server {
 
 void setup();
 

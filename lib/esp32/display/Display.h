@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <FastLED.h>
 
-namespace Display {
+namespace display {
 
 class Display {
 public:

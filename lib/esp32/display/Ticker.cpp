@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "DisplayRoutine.h"
 
-namespace DisplayRoutine {
+namespace display_routine {
 
 #define MAX_CHAR_WIDTH      6
 
@@ -16,7 +16,7 @@ static const uint8_t char_data[6][472] = {
 
 static const unsigned int ofs[] = {0,2,6,12,18,24,30,32,35,38,44,50,53,57,59,63,69,73,79,85,91,97,103,109,115,121,123,126,130,135,139,144,151,157,163,169,175,181,187,193,199,203,208,214,220,226,232,238,244,250,256,262,268,274,280,286,292,298,304,307,311,314,320,326,329,335,340,345,350,355,359,364,369,371,376,381,383,389,394,399,404,410,415,420,424,429,435,441,447,452,457,461,463,467,472};
 
-int writeChar(Display::Display& display, int col, uint32_t color, char c) {
+int writeChar(display::Display& display, int col, uint32_t color, char c) {
   if (c == ' ') {
     return 3;
   }
@@ -35,7 +35,7 @@ int writeChar(Display::Display& display, int col, uint32_t color, char c) {
   return charDefSize;
 }
 
-int writeString(Display::Display& display, int col, uint32_t color, const String& msg) {
+int writeString(display::Display& display, int col, uint32_t color, const String& msg) {
   int charStart = col;
   for (const char* c = msg.begin(); c != msg.end(); c++) {
     int charSize = writeChar(display, charStart, color, *c);
@@ -44,7 +44,7 @@ int writeString(Display::Display& display, int col, uint32_t color, const String
   return charStart;
 }
 
-Ticker::Ticker(Display::Display& display): DisplayRoutine(display) {
+Ticker::Ticker(display::Display& display): DisplayRoutine(display) {
   col = display.width() - 1;
 }
 
@@ -63,7 +63,7 @@ void sanitize(String& msg) {
   }
 }
 
-void Ticker::step(const DisplayConfigServer::DisplayConfig& config) {
+void Ticker::step(const display_config_server::DisplayConfig& config) {
   String configmsg = config.message;
   sanitize(configmsg);
   if (msgStr != configmsg) {

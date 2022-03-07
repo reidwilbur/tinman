@@ -7,7 +7,7 @@
 #include "DisplayConfigServer.h"
 #include "NetworkConfig.h"
 
-namespace DisplayConfigServer {
+namespace display_config_server {
 
 WebServer server(80);
 

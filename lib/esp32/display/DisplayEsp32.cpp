@@ -1,11 +1,9 @@
 #include "display/Display.h"
 #include <FastLED.h>
 
-namespace Display {
+namespace display {
 
 #define LED_WIDTH          40
-#define FRAMES_PER_SECOND  15
-#define MAX_CHAR_WIDTH      6
 #define LED_HEIGHT          8
 
 #define LED_TYPE    WS2812B

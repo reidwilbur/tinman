@@ -4,18 +4,18 @@
 #include "Display.h"
 #include "configserver/DisplayConfigServer.h"
 
-namespace DisplayRoutine {
+namespace display_routine {
 
 class DisplayRoutine {
 protected:
-    Display::Display& display;
+    display::Display& display;
 
 public:
-    DisplayRoutine(Display::Display& display): display(display) {};
+    DisplayRoutine(display::Display& display): display(display) {};
 
     virtual void init() = 0;
 
-    virtual void step(const DisplayConfigServer::DisplayConfig& config) = 0;
+    virtual void step(const display_config_server::DisplayConfig& config) = 0;
 };
 
 class Ticker: public DisplayRoutine {
@@ -23,23 +23,38 @@ private:
     String msgStr;
     int col;
 public:
-    Ticker(Display::Display& display);
+    Ticker(display::Display& display);
 
     void init();
 
-    void step(const DisplayConfigServer::DisplayConfig& config);
+    void step(const display_config_server::DisplayConfig& config);
 };
 
 class DoomFire: public DisplayRoutine {
-private:
-    String msgStr;
-    int col;
 public:
-    DoomFire(Display::Display& display);
+    DoomFire(display::Display& display);
 
     void init();
 
-    void step(const DisplayConfigServer::DisplayConfig& config);
+    void step(const display_config_server::DisplayConfig& config);
+};
+
+class DigitalRain: public DisplayRoutine {
+public:
+    DigitalRain(display::Display& display);
+
+    void init();
+
+    void step(const display_config_server::DisplayConfig& config);
+};
+
+class Sparkle: public DisplayRoutine {
+public:
+    Sparkle(display::Display& display);
+
+    void init();
+
+    void step(const display_config_server::DisplayConfig& config);
 };
 
 }

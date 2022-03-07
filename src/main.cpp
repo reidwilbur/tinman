@@ -7,6 +7,16 @@
 
 #define ONBOARD_LED 2
 
+using namespace display_config_server;
+using namespace display_routine;
+
+Mode lastMode = Mode::TEXT_SCROLL;
+display::Display disp = display::Display();
+Ticker ticker = Ticker(disp);
+DoomFire doomfire = DoomFire(disp);
+DigitalRain digitalrain = DigitalRain(disp);
+Sparkle sparkle = Sparkle(disp);
+
 void setup() {
   Serial.begin(115200);
   delay(3001); // 3 second delay for recovery
@@ -14,59 +24,28 @@ void setup() {
   pinMode(ONBOARD_LED, OUTPUT);
   digitalWrite(ONBOARD_LED, LOW);
 
-  //Display::setup();
-  DisplayConfigServer::setup();
+  display_config_server::setup();
 }
 
-//int col = Display::width() - 1;
-//String msgStr;
-DisplayConfigServer::Mode lastMode = DisplayConfigServer::TEXT_SCROLL;
-Display::Display display = Display::Display();
-DisplayRoutine::Ticker ticker = DisplayRoutine::Ticker(display);
-DisplayRoutine::DoomFire doomfire = DisplayRoutine::DoomFire(display);
+DisplayRoutine& getRoutine(const DisplayConfig& config) {
+  switch(config.mode) {
+    case Mode::TEXT_SCROLL: return ticker;
+    case Mode::DIGITAL_RAIN: return digitalrain;
+    case Mode::SPARKLE: return sparkle;
+    case Mode::FIRE: return doomfire;
+  }
+}
 
 void loop() {
-  //ArduinoOTA.handle();
-  DisplayConfigServer::loop();
-  DisplayConfigServer::DisplayConfig& config = DisplayConfigServer::getConfig();
+  display_config_server::loop();
+  DisplayConfig& config = display_config_server::getConfig();
   bool modeChanged = lastMode != config.mode;
   lastMode = config.mode;
-  switch (config.mode) {
-    case DisplayConfigServer::TEXT_SCROLL:
-      // if (msgStr != config.message) {
-      //   msgStr = config.message;
-      //   col = Display::width() - 1;
-      //   Display::clear();
-      // }
-      // Display::writeString(col, config.bkgColor, msgStr);
-      // col = (col < -(((int)msgStr.length()) * Display::maxCharWidth())) ? Display::width() - 1 : col - 1;
-      // Display::writeString(col, config.textColor, msgStr);
-      if (modeChanged) {
-        ticker.init();
-      }
-      ticker.step(config);
-      break;
-    case DisplayConfigServer::FIRE:
-      if (modeChanged) {
-        doomfire.init();
-      }
-      doomfire.step(config);
-    default:
-      break;
-    // case DisplayConfigServer::DIGITAL_RAIN:
-    //   Display::stepDigitalRain();
-    //   break;
-    // case DisplayConfigServer::SPARKLE:
-    //   Display::stepSparkle();
-    //   break;
-    // case DisplayConfigServer::FIRE:
-    //   if (modeChanged) {
-    //     Display::initFire();
-    //   }
-    //   Display::stepFire();
-    //   break;
+  DisplayRoutine& displayroutine = getRoutine(config);
+  if (modeChanged) {
+    displayroutine.init();
   }
+  displayroutine.step(config);
   FastLED.show();
   FastLED.delay(1000/config.speed);
-  //FastLED.delay(85);
 }
