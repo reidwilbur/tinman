@@ -5,7 +5,7 @@ namespace display {
 
 #define LED_WIDTH  40
 #define LED_HEIGHT  8
-#define BRIGHTNESS  2 
+#define BRIGHTNESS 64
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
@@ -36,14 +36,11 @@ uint rcToDispIdx(uint row, uint col) {
 }
 
 uint idxToDispIdx(uint idx) {
-  uint row = idx / LED_WIDTH;
-  uint col = idx % LED_WIDTH;
-  return rcToDispIdx(idx / LED_WIDTH, col);
+  return rcToDispIdx(idx / LED_WIDTH, idx % LED_WIDTH);
 }
 
 Display::Display() {
   FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
-  FastLED.setBrightness(BRIGHTNESS);
 }
 
 int Display::width() {
@@ -69,7 +66,7 @@ void Display::clear() {
 }
 
 void Display::show() {
-  FastLED.show();
+  FastLED.show(BRIGHTNESS);
 }
 
 }

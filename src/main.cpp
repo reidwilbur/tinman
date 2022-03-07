@@ -8,11 +8,11 @@
 using namespace display_config_server;
 using namespace display_routine;
 
-Mode lastMode = Mode::TEXT_SCROLL;
+Mode lastMode = Mode::TICKER;
 display::Display disp = display::Display();
 
 Ticker ticker = Ticker(disp);
-DoomFire doomfire = DoomFire(disp);
+Fire fire = Fire(disp);
 DigitalRain digitalrain = DigitalRain(disp);
 Sparkle sparkle = Sparkle(disp);
 
@@ -28,10 +28,10 @@ void setup() {
 
 DisplayRoutine& getRoutine(const DisplayConfig& config) {
   switch(config.mode) {
-    case Mode::TEXT_SCROLL: return ticker;
+    case Mode::TICKER: return ticker;
     case Mode::DIGITAL_RAIN: return digitalrain;
     case Mode::SPARKLE: return sparkle;
-    case Mode::FIRE: return doomfire;
+    case Mode::FIRE: return fire;
   }
 }
 

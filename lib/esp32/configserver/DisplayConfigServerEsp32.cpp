@@ -11,7 +11,7 @@ namespace display_config_server {
 
 WebServer server(80);
 
-static DisplayConfig config = { "", 0x007777, 0x0, 15, TEXT_SCROLL };
+static DisplayConfig config = { "", 0x007777, 0x0, 15, TICKER };
 
 void handleRoot();
 void handleNotFound();
@@ -131,8 +131,8 @@ void handleMode() {
     String mode = server.arg("mode");
     mode = urldecode(mode);
     mode.toUpperCase();
-    if (mode == String("TEXT_SCROLL")) {
-      config.mode = TEXT_SCROLL;
+    if (mode == String("TICKER")) {
+      config.mode = TICKER;
       config.speed = 30;
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");

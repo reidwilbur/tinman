@@ -15,7 +15,7 @@ static const std::vector<CRGB> firePalette = {
   CRGB(0xEF,0xEF,0xC7)
 };
 
-void DoomFire::debugPrint() {
+void Fire::debugPrint() {
   char dgbstr[3*display.width() + 1];
   for (uint row = 0; row < display.height(); row++) {
     uint len = 0;
@@ -27,7 +27,7 @@ void DoomFire::debugPrint() {
   Serial.println();
 }
 
-void DoomFire::spreadFire(uint row, uint col) {
+void Fire::spreadFire(uint row, uint col) {
   int rand = random8(0, 4);
   int belowCol = col - rand + 1;
   belowCol = (display.width() + belowCol) & display.width();
@@ -37,23 +37,23 @@ void DoomFire::spreadFire(uint row, uint col) {
   firePixels[row * display.width() + col] = (newColor < 0) ? 0 : newColor;
 }
 
-void DoomFire::setFlame(uint row, uint col) {
+void Fire::setFlame(uint row, uint col) {
   int rand = random8(0, 6);
   firePixels[row * display.width() + col] = (firePalette.size() - 1) - rand;
 }
 
-DoomFire::DoomFire(display::Display& display): 
+Fire::Fire(display::Display& display): 
   DisplayRoutine(display), 
   firePixels(std::vector<uint8_t>(display.width() * display.height())) {
 }
 
-void DoomFire::init() {
+void Fire::init() {
   for (uint idx = 0; idx < firePixels.size(); idx++) {
     firePixels[idx] = 0;
   }
 }
 
-void DoomFire::step(const display_config_server::DisplayConfig& config) {
+void Fire::step(const display_config_server::DisplayConfig& config) {
   //debugPrint();
   for (uint row=0; row < display.height() - 1; row++) {
     for (uint col=0; col < display.width(); col++) {

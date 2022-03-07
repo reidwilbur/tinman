@@ -5,7 +5,7 @@
 
 namespace display_config_server {
 
-enum Mode { DIGITAL_RAIN, TEXT_SCROLL, SPARKLE, FIRE };
+enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE };
 
 struct DisplayConfig {
   String message;
