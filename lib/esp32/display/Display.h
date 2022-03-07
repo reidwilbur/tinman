@@ -1,7 +1,6 @@
 #ifndef __Display_h_INCLUDED__
 #define __Display_h_INCLUDED__
 
-#include <stdint.h>
 #include <FastLED.h>
 
 namespace display {
@@ -9,16 +8,11 @@ namespace display {
 class Display {
 public:
     Display();
-
-    virtual int width();
-
-    virtual int height();
-
-    virtual CRGB getPixel(int row, int col);
-
-    virtual void setPixel(int row, int col, CRGB color);
-
-    virtual void clear();
+    int width();
+    int height();
+    CRGB& operator()(uint row, uint col);
+    void clear();
+    void show();
 };
 
 }

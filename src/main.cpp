@@ -46,6 +46,6 @@ void loop() {
     displayroutine.init();
   }
   displayroutine.step(config);
-  FastLED.show();
-  FastLED.delay(1000/config.speed);
+  disp.show();
+  delay(1000/config.speed);
 }

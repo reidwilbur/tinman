@@ -3,13 +3,9 @@
 
 namespace display {
 
-#define LED_WIDTH          40
-#define LED_HEIGHT          8
-
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
-
-#define BRIGHTNESS 8
+#define LED_WIDTH  40
+#define LED_HEIGHT  8
+#define BRIGHTNESS  2 
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
@@ -40,7 +36,7 @@ uint rcToDispIdx(const uint row, const uint col) {
 }
 
 Display::Display() {
-  FastLED.addLeds<LED_TYPE, GPIO_NUM_23, COLOR_ORDER>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
+  FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
   FastLED.setBrightness(BRIGHTNESS);
 }
 
@@ -52,18 +48,17 @@ int Display::height() {
   return LED_HEIGHT;
 }
 
-CRGB Display::getPixel(int row, int col) {
-  uint ledIdx = rcToDispIdx(row, col);
-  return leds[ledIdx];
-}
-
-void Display::setPixel(int row, int col, CRGB color) {
-  uint ledIdx = rcToDispIdx(row, col);
-  leds[ledIdx] = color;
+CRGB& Display::operator()(uint row, uint col) {
+  uint idx = rcToDispIdx(row, col);
+  return leds[idx];
 }
 
 void Display::clear() {
   FastLED.clear();
+}
+
+void Display::show() {
+  FastLED.show();
 }
 
 }

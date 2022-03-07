@@ -4,7 +4,7 @@
 
 namespace display_routine {
 
-static const CRGB firePalette[] = {
+static const std::vector<CRGB> firePalette = {
   CRGB(0,0,0),
   CRGB(35,10,7),
   CRGB(103,20,7),
@@ -39,7 +39,7 @@ void DoomFire::spreadFire(uint row, uint col) {
 
 void DoomFire::setFlame(uint row, uint col) {
   int rand = random8(0, 6);
-  firePixels[row * display.width() + col] = 7 - rand;
+  firePixels[row * display.width() + col] = (firePalette.size() - 1) - rand;
 }
 
 DoomFire::DoomFire(display::Display& display): 
@@ -67,7 +67,7 @@ void DoomFire::step(const display_config_server::DisplayConfig& config) {
   }
   for (uint col=0; col < display.width(); col++) {
     for (uint row=0; row < display.height(); row++) {
-      display.setPixel(row, col, firePalette[firePixels[row * display.width() + col]]);
+      display(row, col) = firePalette[firePixels[row * display.width() + col]];
     }
   }
 }

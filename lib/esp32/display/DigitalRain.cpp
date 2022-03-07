@@ -18,15 +18,15 @@ void DigitalRain::step(const display_config_server::DisplayConfig& config) {
   {
     for (int col=0; col<display.width(); col++)
     {
-      CRGB pixel = display.getPixel(row, col);
+      CRGB pixel = display(row, col);
       if (pixel == RAIN_DROP) {
-        display.setPixel(row, col, RAIN_TAIL);
+        display(row, col) = RAIN_TAIL;
         if (row < display.height() - 1) {
-          display.setPixel(row + 1, col, RAIN_DROP);
+          display(row + 1, col) = RAIN_DROP;
         }
       }
       if (pixel.g != 255) {
-        display.setPixel(row, col, pixel.nscale8(192));
+        display(row, col) = pixel.nscale8(192);
       }
     }
   }
@@ -34,14 +34,13 @@ void DigitalRain::step(const display_config_server::DisplayConfig& config) {
   for (int col=0; col<display.width(); col++) {
     bool noCode = true;
     for (int row=0; row<display.height(); row++) {
-      CRGB pixel = display.getPixel(row, col);
-      if (pixel == RAIN_DROP) {
+      if (display(row, col) == RAIN_DROP) {
         noCode = false;
         break;
       }
     }
     if (noCode && random(24) == 0) {
-      display.setPixel(0, col, RAIN_DROP);
+      display(0, col) = RAIN_DROP;
     }
   }
 }

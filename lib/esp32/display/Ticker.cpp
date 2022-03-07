@@ -27,7 +27,7 @@ int writeChar(display::Display& display, int col, uint32_t color, char c) {
       int ledCol = charCol + col;
       if (ledCol >= 0 && ledCol < display.width()) {
         if (char_data[row][charCol + charDefOfs]) {
-          display.setPixel(row + 1, ledCol, color);
+          display(row + 1, ledCol) = color;
         }
       }
     }
