@@ -8,10 +8,11 @@ namespace display {
 class Display {
 public:
     Display();
-    int width();
-    int height();
-    CRGB& operator()(uint row, uint col);
-    CRGB& operator[](uint idx);
+    size_t width();
+    size_t height();
+    size_t size();
+    CRGB& operator()(size_t row, size_t col);
+    CRGB& operator[](size_t idx);
     void clear();
     void show();
 };

@@ -3,9 +3,10 @@
 
 namespace display {
 
-#define LED_WIDTH  40
-#define LED_HEIGHT  8
-#define BRIGHTNESS 64
+static const size_t LED_WIDTH = 40;
+static const size_t LED_HEIGHT = 8;
+static const size_t LED_SIZE = LED_WIDTH * LED_HEIGHT;
+static const size_t BRIGHTNESS = 64;
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
@@ -43,20 +44,24 @@ Display::Display() {
   FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
 }
 
-int Display::width() {
+size_t Display::width() {
   return LED_WIDTH;
 }
 
-int Display::height() {
+size_t Display::height() {
   return LED_HEIGHT;
 }
 
-CRGB& Display::operator()(uint row, uint col) {
+size_t Display::size() {
+  return LED_WIDTH;
+}
+
+CRGB& Display::operator()(size_t row, size_t col) {
   uint idx = rcToDispIdx(row, col);
   return leds[idx];
 }
 
-CRGB& Display::operator[](uint idx) {
+CRGB& Display::operator[](size_t idx) {
   uint dispidx = idxToDispIdx(idx);
   return leds[dispidx];
 }
