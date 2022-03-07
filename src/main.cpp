@@ -1,4 +1,3 @@
-//#include <ArduinoOTA.h>
 #include <Arduino.h>
 #include <FastLED.h>
 #include <display/Display.h>
@@ -12,6 +11,7 @@ using namespace display_routine;
 
 Mode lastMode = Mode::TEXT_SCROLL;
 display::Display disp = display::Display();
+
 Ticker ticker = Ticker(disp);
 DoomFire doomfire = DoomFire(disp);
 DigitalRain digitalrain = DigitalRain(disp);

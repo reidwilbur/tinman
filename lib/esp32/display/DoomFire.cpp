@@ -15,54 +15,51 @@ static const CRGB firePalette[] = {
   CRGB(0xEF,0xEF,0xC7)
 };
 
-static const int firePaletteLen = sizeof(firePalette)/sizeof(firePalette[0]);
-
-//TODO: fix this hardcoded stuff
-static uint8_t firePixels[8][40];
-
-void fireDebugPrint(int width, int height) {
-  char dgbstr[3*width + 1];
-  for (uint row = 0; row < height; row++) {
+void DoomFire::debugPrint() {
+  char dgbstr[3*display.width() + 1];
+  for (uint row = 0; row < display.height(); row++) {
     uint len = 0;
-    for (uint col = 0; col < width; col++) {
-      len += sprintf(dgbstr + len, "%2d ", firePixels[row][col]);
+    for (uint col = 0; col < display.width(); col++) {
+      len += sprintf(dgbstr + len, "%2d ", firePixels[row * display.width() + col]);
     }
     Serial.println(dgbstr);
   }
   Serial.println();
 }
 
-void spreadFire(int width, uint row, uint col) {
+void DoomFire::spreadFire(uint row, uint col) {
   int rand = random8(0, 4);
   int belowCol = col - rand + 1;
-  belowCol = (width + belowCol) & width;
-  int belowColor = firePixels[row + 1][col];
+  belowCol = (display.width() + belowCol) & display.width();
+  int belowColor = firePixels[(row + 1) * display.width() + col];
   rand = random8(0, 3);
   int newColor = belowColor - 1;
-  firePixels[row][col] = (newColor < 0) ? 0 : newColor;
+  firePixels[row * display.width() + col] = (newColor < 0) ? 0 : newColor;
 }
 
-void setFlame(uint row, uint col) {
+void DoomFire::setFlame(uint row, uint col) {
   int rand = random8(0, 6);
-  firePixels[row][col] = 7 - rand;
+  firePixels[row * display.width() + col] = 7 - rand;
 }
 
-DoomFire::DoomFire(display::Display& display): DisplayRoutine(display) {
+DoomFire::DoomFire(display::Display& display): 
+  DisplayRoutine(display), 
+  firePixels(std::vector<uint8_t>(display.width() * display.height())) {
 }
 
 void DoomFire::init() {
   for (uint row=0; row < display.height()- 1; row++) {
     for (uint col=0; col < display.width(); col++) {
-      firePixels[row][col] = 0;
+      firePixels[row * display.width() + col] = 0;
     }
   }
 }
 
 void DoomFire::step(const display_config_server::DisplayConfig& config) {
-  fireDebugPrint(display.width(), display.height());
+  //debugPrint();
   for (uint row=0; row < display.height() - 1; row++) {
     for (uint col=0; col < display.width(); col++) {
-      spreadFire(display.width(), row, col);
+      spreadFire(row, col);
     }
   }
   for (uint col=0; col < display.width(); col++) {
@@ -70,7 +67,7 @@ void DoomFire::step(const display_config_server::DisplayConfig& config) {
   }
   for (uint col=0; col < display.width(); col++) {
     for (uint row=0; row < display.height(); row++) {
-      display.setPixel(row, col, firePalette[firePixels[row][col]]);
+      display.setPixel(row, col, firePalette[firePixels[row * display.width() + col]]);
     }
   }
 }

@@ -5,10 +5,6 @@
 
 namespace display_config_server {
 
-void setup();
-
-void loop();
-
 enum Mode { DIGITAL_RAIN, TEXT_SCROLL, SPARKLE, FIRE };
 
 struct DisplayConfig {
@@ -18,6 +14,19 @@ struct DisplayConfig {
   uint32_t speed;
   Mode mode;
 };
+
+class ConfigServer {
+public:
+  ConfigServer();
+
+  int start();
+
+  DisplayConfig& loop();
+};
+
+void setup();
+
+void loop();
 
 DisplayConfig& getConfig();
 
