@@ -9,7 +9,7 @@ namespace display {
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
-uint rcToDispIdx(const uint row, const uint col) {
+uint rcToDispIdx(uint row, uint col) {
   // this display is wired in zig zag pattern 
   // with led index 0 in bottom left
   //  7   8  23  24 ..
@@ -35,6 +35,12 @@ uint rcToDispIdx(const uint row, const uint col) {
     : ((col + 1) * LED_HEIGHT) - 1 - row;
 }
 
+uint idxToDispIdx(uint idx) {
+  uint row = idx / LED_WIDTH;
+  uint col = idx % LED_WIDTH;
+  return rcToDispIdx(idx / LED_WIDTH, col);
+}
+
 Display::Display() {
   FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
   FastLED.setBrightness(BRIGHTNESS);
@@ -51,6 +57,11 @@ int Display::height() {
 CRGB& Display::operator()(uint row, uint col) {
   uint idx = rcToDispIdx(row, col);
   return leds[idx];
+}
+
+CRGB& Display::operator[](uint idx) {
+  uint dispidx = idxToDispIdx(idx);
+  return leds[dispidx];
 }
 
 void Display::clear() {

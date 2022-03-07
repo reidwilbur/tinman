@@ -11,6 +11,7 @@ public:
     int width();
     int height();
     CRGB& operator()(uint row, uint col);
+    CRGB& operator[](uint idx);
     void clear();
     void show();
 };

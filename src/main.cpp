@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <FastLED.h>
 #include <display/Display.h>
 #include <configserver/DisplayConfigServer.h>
 #include <display/DisplayRoutine.h>

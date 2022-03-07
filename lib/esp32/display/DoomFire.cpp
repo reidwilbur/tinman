@@ -48,10 +48,8 @@ DoomFire::DoomFire(display::Display& display):
 }
 
 void DoomFire::init() {
-  for (uint row=0; row < display.height()- 1; row++) {
-    for (uint col=0; col < display.width(); col++) {
-      firePixels[row * display.width() + col] = 0;
-    }
+  for (uint idx = 0; idx < firePixels.size(); idx++) {
+    firePixels[idx] = 0;
   }
 }
 
@@ -65,10 +63,8 @@ void DoomFire::step(const display_config_server::DisplayConfig& config) {
   for (uint col=0; col < display.width(); col++) {
     setFlame(display.height() - 1, col);
   }
-  for (uint col=0; col < display.width(); col++) {
-    for (uint row=0; row < display.height(); row++) {
-      display(row, col) = firePalette[firePixels[row * display.width() + col]];
-    }
+  for (uint idx = 0; idx < firePixels.size(); idx++) {
+    display[idx] = firePalette[firePixels[idx]];
   }
 }
 
