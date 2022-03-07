@@ -17,9 +17,9 @@ static const std::vector<CRGB> firePalette = {
 
 void Fire::debugPrint() {
   char dgbstr[3*display.width() + 1];
-  for (uint row = 0; row < display.height(); row++) {
-    uint len = 0;
-    for (uint col = 0; col < display.width(); col++) {
+  for (auto row = 0; row < display.height(); row++) {
+    auto len = 0;
+    for (auto col = 0; col < display.width(); col++) {
       len += sprintf(dgbstr + len, "%2d ", firePixels[row * display.width() + col]);
     }
     Serial.println(dgbstr);
@@ -28,18 +28,19 @@ void Fire::debugPrint() {
 }
 
 void Fire::spreadFire(uint row, uint col) {
-  int rand = random8(0, 4);
-  int belowCol = col - rand + 1;
-  belowCol = (display.width() + belowCol) & display.width();
-  int belowColor = firePixels[(row + 1) * display.width() + col];
-  rand = random8(0, 3);
-  int newColor = belowColor - 1;
-  firePixels[row * display.width() + col] = (newColor < 0) ? 0 : newColor;
+  int belowCol = (int)col - random8(0, 2) + 1;
+  belowCol = min(max(0, belowCol), (int)display.width() - 1);
+  auto belowColor = firePixels[(row + 1) * display.width() + col];
+  int newColor = max(0, belowColor - 1);
+  firePixels[row * display.width() + col] = newColor;
 }
 
-void Fire::setFlame(uint row, uint col) {
-  int rand = random8(0, 6);
-  firePixels[row * display.width() + col] = (firePalette.size() - 1) - rand;
+void Fire::setFlame(uint row) {
+  auto start = row * display.width();
+  auto end = start + display.width();
+  for (auto idx = start; idx < end; idx++) {
+    firePixels[idx] = random8(1, firePalette.size() - 1);
+  }
 }
 
 Fire::Fire(display::Display& display): 
@@ -48,22 +49,20 @@ Fire::Fire(display::Display& display):
 }
 
 void Fire::init() {
-  for (uint idx = 0; idx < firePixels.size(); idx++) {
+  for (auto idx = 0; idx < firePixels.size(); idx++) {
     firePixels[idx] = 0;
   }
 }
 
 void Fire::step(const display_config_server::DisplayConfig& config) {
   //debugPrint();
-  for (uint row=0; row < display.height() - 1; row++) {
-    for (uint col=0; col < display.width(); col++) {
+  for (auto row=0; row < display.height() - 1; row++) {
+    for (auto col=0; col < display.width(); col++) {
       spreadFire(row, col);
     }
   }
-  for (uint col=0; col < display.width(); col++) {
-    setFlame(display.height() - 1, col);
-  }
-  for (uint idx = 0; idx < firePixels.size(); idx++) {
+  setFlame(display.height() - 1);
+  for (auto idx = 0; idx < firePixels.size(); idx++) {
     display[idx] = firePalette[firePixels[idx]];
   }
 }

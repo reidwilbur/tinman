@@ -29,7 +29,7 @@ public:
 class Fire: public DisplayRoutine {
 private:
     std::vector<uint8_t> firePixels;
-    void setFlame(uint row, uint col);
+    void setFlame(uint row);
     void spreadFire(uint row, uint col);
     void debugPrint();
 public:
