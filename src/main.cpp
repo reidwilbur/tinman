@@ -10,6 +10,7 @@ using namespace display_routine;
 
 Mode lastMode = Mode::TICKER;
 display::Display disp = display::Display();
+ConfigServer server = ConfigServer();
 
 Ticker ticker = Ticker(disp);
 Fire fire = Fire(disp);
@@ -24,7 +25,7 @@ void setup() {
   pinMode(ONBOARD_LED, OUTPUT);
   digitalWrite(ONBOARD_LED, LOW);
 
-  display_config_server::setup();
+  server.start();
 }
 
 DisplayRoutine& getRoutine(const DisplayConfig& config) {
@@ -38,8 +39,7 @@ DisplayRoutine& getRoutine(const DisplayConfig& config) {
 }
 
 void loop() {
-  display_config_server::loop();
-  DisplayConfig& config = display_config_server::getConfig();
+  DisplayConfig& config = server.loop();
   bool modeChanged = lastMode != config.mode;
   lastMode = config.mode;
   DisplayRoutine& displayroutine = getRoutine(config);

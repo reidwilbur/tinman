@@ -11,20 +11,44 @@ namespace display_config_server {
 
 WebServer server(80);
 
-static DisplayConfig config = { "", 0x007777, 0x0, 15, TICKER };
+unsigned char h2int(char c) {
+  if (c >= '0' && c <='9'){
+    return((unsigned char)c - '0');
+  }
+  if (c >= 'a' && c <='f'){
+    return((unsigned char)c - 'a' + 10);
+  }
+  if (c >= 'A' && c <='F'){
+    return((unsigned char)c - 'A' + 10);
+  }
+  return(0);
+}
 
-void handleRoot();
-void handleNotFound();
-void handleMsg();
-void handleClr();
-void handleBkgClr();
-void handleSpeed();
-void handleMode();
+String urldecode(String str) {
+  String decodedString="";
+  char c;
+  char code0;
+  char code1;
+  for (uint i =0; i < str.length(); i++){
+    c=str.charAt(i);
+    if (c == '+'){
+      decodedString+=' ';  
+    } else if (c == '%') {
+      i++;
+      code0=str.charAt(i);
+      i++;
+      code1=str.charAt(i);
+      c = (h2int(code0) << 4) | h2int(code1);
+      decodedString+=c;
+    } else {
+      decodedString+=c;  
+    }
+  }
+  
+  return decodedString;
+}
 
-String urldecode(String);
-unsigned char h2int(char);
-
-void setup() {
+int ConfigServer::start() {
   WiFi.disconnect();
   WiFi.config(ip, gateway, subnet, dns);
   WiFi.begin(ssid, pswd);
@@ -33,13 +57,12 @@ void setup() {
   }
   Serial.print("Wifi connected ");
   Serial.println(WiFi.localIP());
-  server.on("/", handleRoot);
-  server.on("/msg", HTTP_POST, handleMsg);
-  server.on("/clr", HTTP_POST, handleClr);
-  server.on("/bkgclr", HTTP_POST, handleBkgClr);
-  server.on("/speed", HTTP_POST, handleSpeed);
-  server.on("/mode", HTTP_POST, handleMode);
-  server.onNotFound(handleNotFound);
+  server.on("/", [this](){ handleRoot(); });
+  server.on("/msg", HTTP_POST, [this]() { handleMsg(); });
+  server.on("/clr", HTTP_POST, [this]() { handleFgColor(); });
+  server.on("/speed", HTTP_POST, [this]() { handleSpeed(); });
+  server.on("/mode", HTTP_POST, [this]() { handleMode(); });
+  server.onNotFound([this]() { handleNotFound(); });
   server.begin();
 
   esp_err_t res = ESP_FAIL;
@@ -57,21 +80,19 @@ void setup() {
     Serial.print("mdns add svc failed");
     Serial.println(res);
   }
+  Serial.println("Server started");
+  return res;
 }
 
-void loop() {
-  server.handleClient();
-}
-
-void handleRoot() {
+void ConfigServer::handleRoot() {
   server.send(200, "text/plain", "hello monster");
 }
 
-void handleNotFound() {
+void ConfigServer::handleNotFound() {
   server.send(404, "text/plain", "404: Not found");
 }
 
-void handleMsg() {
+void ConfigServer::handleMsg() {
   Serial.println("handleMsg");
   if (server.hasArg("msg")) {
     Serial.println("ok request");
@@ -85,7 +106,7 @@ void handleMsg() {
   Serial.println(config.message);
 }
 
-void handleClr() {
+void ConfigServer::handleFgColor() {
   Serial.println("handleClr");
   String clr = server.arg("clr");
   int fields = sscanf(clr.c_str(), "0x%x", &config.textColor);
@@ -98,20 +119,7 @@ void handleClr() {
   }
 }
 
-void handleBkgClr() {
-  Serial.println("handleBkClr");
-  String clr = server.arg("bkgclr");
-  int fields = sscanf(clr.c_str(), "0x%x", &config.bkgColor);
-  if (fields == 1) {
-    Serial.println("ok request");
-    server.send(200, "text/plain", "OK\n");
-  } else {
-    Serial.println("bad request");
-    server.send(400, "text/plain", "Bad request");
-  }
-}
-
-void handleSpeed() {
+void ConfigServer::handleSpeed() {
   Serial.println("handleSpeed");
   String speed = server.arg("speed");
   int fields = sscanf(speed.c_str(), "%u", &config.speed);
@@ -125,7 +133,7 @@ void handleSpeed() {
   }
 }
 
-void handleMode() {
+void ConfigServer::handleMode() {
   Serial.println("handleMode");
   if (server.hasArg("mode")) {
     String mode = server.arg("mode");
@@ -168,47 +176,13 @@ void handleMode() {
   Serial.println(config.message);
 }
 
-DisplayConfig& getConfig() {
+ConfigServer::ConfigServer(): 
+  config({ "", 0x007777, 0x0, 15, TICKER }) {
+}
+
+DisplayConfig& ConfigServer::loop() {
+  server.handleClient();
   return config;
-}
-
-String urldecode(String str)
-{
-  String encodedString="";
-  char c;
-  char code0;
-  char code1;
-  for (uint i =0; i < str.length(); i++){
-    c=str.charAt(i);
-    if (c == '+'){
-      encodedString+=' ';  
-    } else if (c == '%') {
-      i++;
-      code0=str.charAt(i);
-      i++;
-      code1=str.charAt(i);
-      c = (h2int(code0) << 4) | h2int(code1);
-      encodedString+=c;
-    } else {
-      encodedString+=c;  
-    }
-  }
-  
-  return encodedString;
-}
-
-unsigned char h2int(char c)
-{
-  if (c >= '0' && c <='9'){
-    return((unsigned char)c - '0');
-  }
-  if (c >= 'a' && c <='f'){
-    return((unsigned char)c - 'a' + 10);
-  }
-  if (c >= 'A' && c <='F'){
-    return((unsigned char)c - 'A' + 10);
-  }
-  return(0);
 }
 
 }

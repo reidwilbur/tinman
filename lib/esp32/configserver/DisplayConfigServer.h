@@ -16,19 +16,19 @@ struct DisplayConfig {
 };
 
 class ConfigServer {
+private:
+  DisplayConfig config;
+  void handleMsg();
+  void handleFgColor();
+  void handleSpeed();
+  void handleMode();
+  void handleRoot();
+  void handleNotFound();
 public:
   ConfigServer();
-
   int start();
-
   DisplayConfig& loop();
 };
-
-void setup();
-
-void loop();
-
-DisplayConfig& getConfig();
 
 }
 
