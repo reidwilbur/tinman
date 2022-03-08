@@ -2,10 +2,18 @@
 #define __DisplayConfigServer_h_INCLUDED__
 
 #include <stdint.h>
+#include <display/Display.h>
 
 namespace display_config_server {
 
 enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT };
+static const String ModeStrings[] = {
+  String("DIGITAL_RAIN"),
+  String("TICKER"),
+  String("SPARKLE"),
+  String("FIRE"),
+  String("KITT")
+};
 
 struct DisplayConfig {
   String message;
@@ -18,15 +26,14 @@ struct DisplayConfig {
 class ConfigServer {
 private:
   DisplayConfig config;
-  void handleMsg();
-  void handleFgColor();
-  void handleSpeed();
-  void handleMode();
+  void postSpeed();
+  void postMode();
   void handleRoot();
   void handleNotFound();
+  void getMode();
 public:
   ConfigServer();
-  int start();
+  int start(display::Display& disp);
   DisplayConfig& loop();
 };
 

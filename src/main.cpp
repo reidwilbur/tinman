@@ -22,10 +22,19 @@ void setup() {
   Serial.begin(115200);
   delay(3001); // 3 second delay for recovery
 
-  pinMode(ONBOARD_LED, OUTPUT);
-  digitalWrite(ONBOARD_LED, LOW);
+  //pinMode(ONBOARD_LED, OUTPUT);
+  //digitalWrite(ONBOARD_LED, LOW);
 
-  server.start();
+  auto res = server.start(disp);
+  if (res != ESP_OK) {
+    disp.clear();
+    disp(0,0) = CRGB(255,0,0);
+    disp.show();
+    delay(3000);
+    disp.clear();
+    disp.show();
+    esp_restart();
+  }
 }
 
 DisplayRoutine& getRoutine(const DisplayConfig& config) {

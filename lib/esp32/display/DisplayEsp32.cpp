@@ -36,10 +36,6 @@ uint rcToDispIdx(uint row, uint col) {
     : ((col + 1) * LED_HEIGHT) - 1 - row;
 }
 
-uint idxToDispIdx(uint idx) {
-  return rcToDispIdx(idx / LED_WIDTH, idx % LED_WIDTH);
-}
-
 Display::Display() {
   FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
 }
@@ -53,7 +49,7 @@ size_t Display::height() {
 }
 
 size_t Display::size() {
-  return LED_WIDTH;
+  return LED_SIZE;
 }
 
 CRGB& Display::operator()(size_t row, size_t col) {
@@ -62,8 +58,8 @@ CRGB& Display::operator()(size_t row, size_t col) {
 }
 
 CRGB& Display::operator[](size_t idx) {
-  uint dispidx = idxToDispIdx(idx);
-  return leds[dispidx];
+  auto cidx = idx % size();
+  return leds[rcToDispIdx(cidx / LED_WIDTH, cidx % LED_WIDTH)];
 }
 
 void Display::clear() {
