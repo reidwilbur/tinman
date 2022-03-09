@@ -15,6 +15,7 @@ WebServer server(80);
 static const String ARG_MSG = String("msg");
 static const String ARG_SPEED = String("speed");
 static const String ARG_CLR = String("clr");
+static const String ARG_COLOR_CODE = String("clrcode");
 static const String ARG_MODE = String("mode");
 
 unsigned char h2int(char c) {
@@ -134,50 +135,73 @@ void ConfigServer::getMode() {
   server.send(200, "text/plain", ModeStrings[config.mode] + "\n");
 }
 
+static const std::map<String, uint32_t> COLOR_CODES{
+  {String("RED"),    0x8B0000},
+  {String("ORANGE"), 0xFFA500},
+  {String("YELLOW"), 0xFFFF00},
+  {String("GREEN"),  0x00FF00},
+  {String("BLUE"),   0x0000FF},
+  {String("PURPLE"), 0x800080},
+  {String("PINK"),   0xFFC0CB},
+  {String("WHITE"),  0xFFFFFF}
+};
+
 void setTicker(DisplayConfig& config) {
-  config.mode = TICKER;
+  config.mode = Mode::TICKER;
   config.speed = 30;
   setSpeed(config);
   if (server.hasArg(ARG_MSG)) {
     config.message = server.arg(ARG_MSG);
   }
-  if (server.hasArg(ARG_CLR)) {
-    sscanf(server.arg(ARG_CLR).c_str(), "0x%6x", &config.textColor);
+  if (server.hasArg(ARG_COLOR_CODE)) {
+    sscanf(server.arg(ARG_COLOR_CODE).c_str(), "0x%6x", &config.textColor);
+  } else if (server.hasArg(ARG_CLR)) {
+    String color = server.arg(ARG_CLR);
+    color.toUpperCase();
+    auto entry = COLOR_CODES.find(color);
+    if (entry != COLOR_CODES.end()) {
+      config.textColor = entry->second;
+    }
   }
 }
 
 void setDigRain(DisplayConfig& config) {
-  config.mode = DIGITAL_RAIN;
+  config.mode = Mode::DIGITAL_RAIN;
   config.speed = 15;
   setSpeed(config);
 }
 
 void setSparkle(DisplayConfig& config) {
-  config.mode = SPARKLE;
+  config.mode = Mode::SPARKLE;
   config.speed = 25;
   setSpeed(config);
 }
 
 void setFire(DisplayConfig& config) {
-  config.mode = FIRE;
+  config.mode = Mode::FIRE;
   config.speed = 10;
   setSpeed(config);
 }
 
 void setKitt(DisplayConfig& config) {
-  config.mode = KITT;
+  config.mode = Mode::KITT;
   config.speed = 7;
-  if (server.hasArg(ARG_SPEED)) {
-    sscanf(server.arg(ARG_SPEED).c_str(), "%u", &config.speed);
-  }
+  setSpeed(config);
 }
 
-std::map<String, std::function<void(DisplayConfig&)>> modeHandlers{
+void setStatic(DisplayConfig& config) {
+  config.mode = Mode::STATIC;
+  config.speed = 30;
+  setSpeed(config);
+}
+
+static const std::map<String, std::function<void(DisplayConfig&)>> MODE_HANDLERS{
   {ModeStrings[Mode::TICKER], setTicker},
   {ModeStrings[Mode::DIGITAL_RAIN], setDigRain},
   {ModeStrings[Mode::SPARKLE], setSparkle},
   {ModeStrings[Mode::FIRE], setFire},
-  {ModeStrings[Mode::KITT], setKitt}
+  {ModeStrings[Mode::KITT], setKitt},
+  {ModeStrings[Mode::STATIC], setStatic}
 };
 
 void ConfigServer::postMode() {
@@ -185,8 +209,8 @@ void ConfigServer::postMode() {
   if (server.hasArg("mode")) {
     auto mode = server.arg("mode");
     mode.toUpperCase();
-    auto handler = modeHandlers.find(mode);
-    if (handler != modeHandlers.end()) {
+    auto handler = MODE_HANDLERS.find(mode);
+    if (handler != MODE_HANDLERS.end()) {
       handler->second(config);
       Serial.println("ok request");
       server.send(200, "text/plain", "OK\n");
@@ -201,7 +225,7 @@ void ConfigServer::postMode() {
 }
 
 ConfigServer::ConfigServer(): 
-  config({ "", 0x007777, 0x0, 15, TICKER }) {
+  config({ "", 0xffff00, 0x0, 15, Mode::TICKER }) {
 }
 
 DisplayConfig& ConfigServer::loop() {

@@ -63,6 +63,13 @@ public:
     void step(const display_config_server::DisplayConfig& config);
 };
 
+class Static: public DisplayRoutine {
+public:
+    Static(display::Display& display);
+    void init();
+    void step(const display_config_server::DisplayConfig& config);
+};
+
 }
 
 #endif

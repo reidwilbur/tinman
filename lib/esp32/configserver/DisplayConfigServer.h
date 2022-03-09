@@ -6,13 +6,14 @@
 
 namespace display_config_server {
 
-enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT };
+enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT, STATIC };
 static const String ModeStrings[] = {
   String("DIGITAL_RAIN"),
   String("TICKER"),
   String("SPARKLE"),
   String("FIRE"),
-  String("KITT")
+  String("KITT"),
+  String("STATIC")
 };
 
 struct DisplayConfig {

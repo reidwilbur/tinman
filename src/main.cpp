@@ -17,10 +17,11 @@ Fire fire = Fire(disp);
 DigitalRain digitalrain = DigitalRain(disp);
 Sparkle sparkle = Sparkle(disp);
 Kitt kitt = Kitt(disp);
+Static staticRoutine = Static(disp);
 
 void setup() {
   Serial.begin(115200);
-  delay(3001); // 3 second delay for recovery
+  delay(1000);
 
   //pinMode(ONBOARD_LED, OUTPUT);
   //digitalWrite(ONBOARD_LED, LOW);
@@ -44,6 +45,7 @@ DisplayRoutine& getRoutine(const DisplayConfig& config) {
     case Mode::SPARKLE: return sparkle;
     case Mode::FIRE: return fire;
     case Mode::KITT: return kitt;
+    case Mode::STATIC: return staticRoutine;
   }
 }
 
