@@ -39,7 +39,7 @@ void Fire::setFlame(uint row) {
   auto start = row * display.width();
   auto end = start + display.width();
   for (auto idx = start; idx < end; idx++) {
-    firePixels[idx] = random8(1, firePalette.size() - 1);
+    firePixels[idx] = random8(4, firePalette.size());
   }
 }
 

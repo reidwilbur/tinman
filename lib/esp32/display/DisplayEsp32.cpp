@@ -37,7 +37,7 @@ uint rcToDispIdx(uint row, uint col) {
 }
 
 Display::Display() {
-  FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalLEDStrip).setDither(1);
+  FastLED.addLeds<WS2812B, GPIO_NUM_23, GRB>(leds, LED_WIDTH * LED_HEIGHT).setCorrection(TypicalPixelString).setDither(1);
 }
 
 size_t Display::width() {

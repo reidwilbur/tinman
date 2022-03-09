@@ -18,6 +18,7 @@ DigitalRain digitalrain = DigitalRain(disp);
 Sparkle sparkle = Sparkle(disp);
 Kitt kitt = Kitt(disp);
 Static staticRoutine = Static(disp);
+NyanCat nyancat = NyanCat(disp);
 
 void setup() {
   Serial.begin(115200);
@@ -46,6 +47,7 @@ DisplayRoutine& getRoutine(const DisplayConfig& config) {
     case Mode::FIRE: return fire;
     case Mode::KITT: return kitt;
     case Mode::STATIC: return staticRoutine;
+    case Mode::NYANCAT: return nyancat;
   }
 }
 

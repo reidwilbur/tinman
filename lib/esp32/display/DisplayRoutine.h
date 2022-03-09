@@ -70,6 +70,17 @@ public:
     void step(const display_config_server::DisplayConfig& config);
 };
 
+class NyanCat: public DisplayRoutine {
+private:
+    int catFrame;
+    int catPosR;
+    int catPosC;
+public:
+    NyanCat(display::Display& display);
+    void init();
+    void step(const display_config_server::DisplayConfig& config);
+};
+
 }
 
 #endif

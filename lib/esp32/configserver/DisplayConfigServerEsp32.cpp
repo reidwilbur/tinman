@@ -195,13 +195,20 @@ void setStatic(DisplayConfig& config) {
   setSpeed(config);
 }
 
+void setNyanCat(DisplayConfig& config) {
+  config.mode = Mode::NYANCAT;
+  config.speed = 7;
+  setSpeed(config);
+}
+
 static const std::map<String, std::function<void(DisplayConfig&)>> MODE_HANDLERS{
   {ModeStrings[Mode::TICKER], setTicker},
   {ModeStrings[Mode::DIGITAL_RAIN], setDigRain},
   {ModeStrings[Mode::SPARKLE], setSparkle},
   {ModeStrings[Mode::FIRE], setFire},
   {ModeStrings[Mode::KITT], setKitt},
-  {ModeStrings[Mode::STATIC], setStatic}
+  {ModeStrings[Mode::STATIC], setStatic},
+  {ModeStrings[Mode::NYANCAT], setNyanCat}
 };
 
 void ConfigServer::postMode() {
