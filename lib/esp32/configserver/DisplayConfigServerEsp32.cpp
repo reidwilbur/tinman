@@ -167,7 +167,7 @@ void setTicker(DisplayConfig& config) {
 
 void setDigRain(DisplayConfig& config) {
   config.mode = Mode::DIGITAL_RAIN;
-  config.speed = 15;
+  config.speed = 8;
   setSpeed(config);
 }
 
@@ -179,13 +179,13 @@ void setSparkle(DisplayConfig& config) {
 
 void setFire(DisplayConfig& config) {
   config.mode = Mode::FIRE;
-  config.speed = 10;
+  config.speed = 15;
   setSpeed(config);
 }
 
 void setKitt(DisplayConfig& config) {
   config.mode = Mode::KITT;
-  config.speed = 7;
+  config.speed = 8;
   setSpeed(config);
 }
 
