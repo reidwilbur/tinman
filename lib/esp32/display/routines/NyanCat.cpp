@@ -16,6 +16,7 @@ static const CRGB CAT_PALETTE[] = {
 };
 
 static const CRGB WHITE = CRGB(CRGB::White).nscale8(92);
+static const CRGB BKG_COLOR = CRGB(0x000010);
 
 static const uint32_t CAT_FRAMES[3][78] = {
 {
@@ -155,7 +156,7 @@ void drawStar(display::Display& display, const Star& star) {
 
 void NyanCat::step(const display_config_server::DisplayConfig& config) {
   for (auto idx = 0; idx < display.size(); idx++) {
-    display[idx] = CRGB(0x000010);
+    display[idx] = BKG_COLOR;
   }
 
   drawRainbow(display, catFrame, catPosR, catPosC);
