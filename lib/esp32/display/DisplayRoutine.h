@@ -11,14 +11,14 @@ namespace display_routine {
 class DisplayRoutine {
 protected:
     display::Display& display;
+    display::DisplayConfig defaultCfg;
 public:
-    DisplayRoutine(display::Display& display): display(display) {};
+    DisplayRoutine(display::Display& display, display::DisplayConfig cfg): display(display), defaultCfg(cfg) {};
     virtual void init() = 0;
     virtual void step(const display::DisplayConfig& config) = 0;
-    //virtual const display::DisplayConfig& getDefaultConfig() = 0;
-
-    //static const DisplayRoutine* getRoutine(const String& mode);
-    //static const DisplayRoutine& getRoutine(display::Mode mode);
+    const display::DisplayConfig& getDefaultConfig() {
+        return defaultCfg;
+    };
 };
 
 class Ticker: public DisplayRoutine {
@@ -29,7 +29,6 @@ public:
     Ticker(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class Fire: public DisplayRoutine {
@@ -42,7 +41,6 @@ public:
     Fire(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class DigitalRain: public DisplayRoutine {
@@ -50,7 +48,6 @@ public:
     DigitalRain(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class Sparkle: public DisplayRoutine {
@@ -58,7 +55,6 @@ public:
     Sparkle(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class Kitt: public DisplayRoutine {
@@ -70,7 +66,6 @@ public:
     Kitt(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class Static: public DisplayRoutine {
@@ -78,7 +73,6 @@ public:
     Static(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
 };
 
 class NyanCat: public DisplayRoutine {
@@ -90,7 +84,46 @@ public:
     NyanCat(display::Display& display);
     void init();
     void step(const display::DisplayConfig& config);
-    //const display::DisplayConfig& getDefaultConfig();
+};
+
+class DisplayRoutines {
+private:
+    DigitalRain rain;
+    Fire fire;
+    Kitt kitt;
+    NyanCat nyanCat;
+    Sparkle sparkle;
+    Static tvStatic;
+    Ticker ticker;
+public:
+    DisplayRoutines(display::Display& disp):
+        rain(DigitalRain(disp)),
+        fire(Fire(disp)),
+        kitt(Kitt(disp)),
+        nyanCat(NyanCat(disp)),
+        sparkle(Sparkle(disp)),
+        tvStatic(Static(disp)),
+        ticker(Ticker(disp)) {
+    }
+
+    const DisplayRoutine* getRoutine(const String& mode) {
+        for (auto idx = 0; idx < display::ModeStrings.size(); idx++) {
+            return getRoutine(display::ModeStrings[idx]);
+        }
+        return NULL;
+    }
+
+    DisplayRoutine& getRoutine(display::Mode mode) {
+        switch(mode) {
+            case display::Mode::DIGITAL_RAIN: return rain;
+            case display::Mode::FIRE: return fire;
+            case display::Mode::KITT: return kitt;
+            case display::Mode::NYANCAT: return nyanCat;
+            case display::Mode::SPARKLE: return sparkle;
+            case display::Mode::STATIC: return tvStatic;
+            case display::Mode::TICKER: return ticker;
+        }
+    }
 };
 
 }

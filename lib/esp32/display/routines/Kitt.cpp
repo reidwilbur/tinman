@@ -6,7 +6,10 @@ namespace display_routine {
 
 static const int LIGHTS = 8;
 
-Kitt::Kitt(display::Display& display): DisplayRoutine(display), lightIdx(0), dir(1) {
+Kitt::Kitt(display::Display& display): 
+  DisplayRoutine(display, {"", 0x0, 0x0, 8, display::Mode::KITT, false, 64}), 
+  lightIdx(0), 
+  dir(1) {
 }
 
 void Kitt::init() {

@@ -44,7 +44,7 @@ void Fire::setFlame(uint row) {
 }
 
 Fire::Fire(display::Display& display): 
-  DisplayRoutine(display), 
+  DisplayRoutine(display, {"", 0x0, 0x0, 15, display::Mode::FIRE, false, 64}), 
   firePixels(std::vector<uint8_t>(display.width() * display.height())) {
 }
 

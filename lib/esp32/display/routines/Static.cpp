@@ -6,7 +6,8 @@ namespace display_routine {
 
 static const CRGB WHITE = CRGB(255,255,255);
 
-Static::Static(display::Display& display): DisplayRoutine(display) {
+Static::Static(display::Display& display): 
+  DisplayRoutine(display, {"", 0x0, 0x0, 30, display::Mode::STATIC, false, 64}) {
 }
 
 void Static::init() {

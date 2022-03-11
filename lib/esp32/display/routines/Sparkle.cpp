@@ -6,7 +6,8 @@ namespace display_routine {
 
 static const CRGB WHITE = CRGB(255,255,255);
 
-Sparkle::Sparkle(display::Display& display): DisplayRoutine(display) {
+Sparkle::Sparkle(display::Display& display): 
+  DisplayRoutine(display, {"", 0x0, 0x0, 25, display::Mode::SPARKLE, false, 64}) {
 }
 
 void Sparkle::init() {

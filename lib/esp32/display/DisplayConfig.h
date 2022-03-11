@@ -6,7 +6,7 @@
 namespace display {
 
 enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT, STATIC, NYANCAT };
-static const String ModeStrings[] = {
+static const std::vector<String> ModeStrings {
   String("DIGITAL_RAIN"),
   String("TICKER"),
   String("SPARKLE"),
