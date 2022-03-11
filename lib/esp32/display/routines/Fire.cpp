@@ -4,7 +4,7 @@
 
 namespace display_routine {
 
-static const std::vector<CRGB> firePalette = {
+static const std::vector<CRGB> firePalette{
   CRGB(0,0,0),
   CRGB(35,10,7),
   CRGB(103,20,7),

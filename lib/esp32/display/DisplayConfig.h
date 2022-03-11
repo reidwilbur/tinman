@@ -5,8 +5,17 @@
 
 namespace display {
 
-enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT, STATIC, NYANCAT };
-static const std::vector<String> ModeStrings {
+enum Mode { 
+  DIGITAL_RAIN, 
+  TICKER, 
+  SPARKLE, 
+  FIRE, 
+  KITT, 
+  STATIC, 
+  NYANCAT 
+};
+
+static const std::vector<String> MODE_STRINGS {
   String("DIGITAL_RAIN"),
   String("TICKER"),
   String("SPARKLE"),

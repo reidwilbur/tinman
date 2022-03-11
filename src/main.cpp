@@ -10,9 +10,9 @@ using namespace display_routine;
 using namespace display;
 
 Mode lastMode = Mode::TICKER;
-display::Display disp = display::Display();
-DisplayRoutines routines = DisplayRoutines(disp);
-ConfigServer server = ConfigServer();
+display::Display disp;
+DisplayRoutines routines(disp);
+ConfigServer server(routines);
 
 void setup() {
   Serial.begin(115200);

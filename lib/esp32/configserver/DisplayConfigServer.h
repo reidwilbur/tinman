@@ -4,21 +4,22 @@
 #include <stdint.h>
 #include <display/Display.h>
 #include <display/DisplayConfig.h>
+#include <display/DisplayRoutine.h>
 
 namespace display_config_server {
 
 class ConfigServer {
 private:
   display::DisplayConfig config;
-  void postSpeed();
-  void postMode();
+  display_routine::DisplayRoutines& routines;
   void handleRoot();
   void handleNotFound();
+  void postMode();
   void getMode();
   void postSleep();
   void getSleep();
 public:
-  ConfigServer();
+  ConfigServer(display_routine::DisplayRoutines& routines);
   int start(display::Display& disp);
   display::DisplayConfig& loop();
 };

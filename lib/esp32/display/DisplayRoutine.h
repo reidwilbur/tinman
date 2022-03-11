@@ -16,7 +16,7 @@ public:
     DisplayRoutine(display::Display& display, display::DisplayConfig cfg): display(display), defaultCfg(cfg) {};
     virtual void init() = 0;
     virtual void step(const display::DisplayConfig& config) = 0;
-    const display::DisplayConfig& getDefaultConfig() {
+    const display::DisplayConfig& getDefaultConfig() const {
         return defaultCfg;
     };
 };
@@ -107,8 +107,10 @@ public:
     }
 
     const DisplayRoutine* getRoutine(const String& mode) {
-        for (auto idx = 0; idx < display::ModeStrings.size(); idx++) {
-            return getRoutine(display::ModeStrings[idx]);
+        for (auto idx = 0; idx < display::MODE_STRINGS.size(); idx++) {
+            if (mode == display::MODE_STRINGS[idx]) {
+              return &getRoutine((display::Mode)idx);
+            }
         }
         return NULL;
     }
