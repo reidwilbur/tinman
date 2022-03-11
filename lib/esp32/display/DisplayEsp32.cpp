@@ -6,7 +6,7 @@ namespace display {
 static const size_t LED_WIDTH = 40;
 static const size_t LED_HEIGHT = 8;
 static const size_t LED_SIZE = LED_WIDTH * LED_HEIGHT;
-static const size_t BRIGHTNESS = 64;
+static const size_t BRIGHTNESS = 255;
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 
@@ -68,6 +68,11 @@ void Display::clear() {
 
 void Display::show() {
   FastLED.show(BRIGHTNESS);
+}
+
+void Display::delay(uint32_t ms) {
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.delay(ms);
 }
 
 }

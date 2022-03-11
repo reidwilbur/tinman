@@ -25,6 +25,7 @@ def main():
     group.add_argument("--camevents", action="store_true", help="Attach to log and stream for camera events")
     group.add_argument("--ticker", action="store", help="Set ticker with message", metavar='<text>')
     group.add_argument("--mode", choices=modes, help="Set ticker mode. Allowed values are " + ", ".join(modes), metavar="<mode>")
+    group.add_argument("--sleep", action=argparse.BooleanOptionalAction, help="Set sleep mode (disables display)")
     args = parser.parse_args()
     if args.inmtg:
         in_mtg()
@@ -38,9 +39,19 @@ def main():
         set_mode(args.mode)
     elif args.ticker != None:
         set_mode("ticker", args.ticker)
+    elif args.sleep != None:
+        set_sleep(args.sleep)
     else:
         parser.print_usage()
         exit(1)
+
+def set_sleep(sleep):
+    ticker_url = config["DEFAULT"]["ticker_url"]
+    url = ticker_url + "sleep"
+    fields = {"sleep": "true" if (sleep) else "false"}
+    req = Request(url, urlencode(fields).encode())
+    with urlopen(req) as resp:
+        return resp.status == 200
 
 def working_hour():
     now = datetime.now()

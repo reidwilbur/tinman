@@ -133,7 +133,9 @@ void ConfigServer::handleNotFound() {
 
 void ConfigServer::postSleep() {
   if (server.hasArg(ARG_SLEEP)) {
-    sscanf(server.arg(ARG_SLEEP).c_str(), "%b", &config.speed);
+    auto sleepVal = server.arg(ARG_SLEEP);
+    sleepVal.toUpperCase();
+    config.sleep = (sleepVal == String("TRUE"));
   }
   server.send(200, FORMAT, RESP_OK);
 }

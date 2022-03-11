@@ -9,10 +9,10 @@ using namespace display_config_server;
 using namespace display_routine;
 using namespace display;
 
-Mode lastMode = Mode::TICKER;
 display::Display disp;
 DisplayRoutines routines(disp);
 ConfigServer server(routines);
+DisplayConfig lastCfg = routines.getRoutine(Mode::TICKER).getDefaultConfig();
 
 void setup() {
   Serial.begin(115200);
@@ -35,13 +35,21 @@ void setup() {
 
 void loop() {
   DisplayConfig& config = server.loop();
-  bool modeChanged = lastMode != config.mode;
-  lastMode = config.mode;
-  DisplayRoutine& displayroutine = routines.getRoutine(config.mode);
-  if (modeChanged) {
-    displayroutine.init();
+  if (config.sleep) {
+    if (!lastCfg.sleep) {
+      disp.clear();
+      disp.show();
+    }
+    lastCfg = config;
+    delay(1000);
+  } else {
+    bool modeChanged = lastCfg.mode != config.mode;
+    lastCfg = config;
+    DisplayRoutine& displayroutine = routines.getRoutine(config.mode);
+    if (modeChanged) {
+      displayroutine.init();
+    }
+    displayroutine.step(config);
+    disp.delay(1000/config.speed);
   }
-  displayroutine.step(config);
-  disp.show();
-  delay(1000/config.speed);
 }

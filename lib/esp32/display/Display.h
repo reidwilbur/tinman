@@ -15,6 +15,7 @@ public:
     CRGB& operator[](size_t idx);
     void clear();
     void show();
+    void delay(uint32_t ms);
 };
 
 }
