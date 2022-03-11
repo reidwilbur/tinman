@@ -3,40 +3,25 @@
 
 #include <stdint.h>
 #include <display/Display.h>
+#include <display/DisplayConfig.h>
+#include <display/DisplayRoutine.h>
 
 namespace display_config_server {
 
-enum Mode { DIGITAL_RAIN, TICKER, SPARKLE, FIRE, KITT, STATIC, NYANCAT };
-static const String ModeStrings[] = {
-  String("DIGITAL_RAIN"),
-  String("TICKER"),
-  String("SPARKLE"),
-  String("FIRE"),
-  String("KITT"),
-  String("STATIC"),
-  String("NYANCAT")
-};
-
-struct DisplayConfig {
-  String message;
-  uint32_t textColor;
-  uint32_t bkgColor;
-  uint32_t speed;
-  Mode mode;
-};
-
 class ConfigServer {
 private:
-  DisplayConfig config;
-  void postSpeed();
-  void postMode();
+  display::DisplayConfig config;
+  display_routine::DisplayRoutines& routines;
   void handleRoot();
   void handleNotFound();
+  void postMode();
   void getMode();
+  void postSleep();
+  void getSleep();
 public:
-  ConfigServer();
+  ConfigServer(display_routine::DisplayRoutines& routines);
   int start(display::Display& disp);
-  DisplayConfig& loop();
+  display::DisplayConfig& loop();
 };
 
 }

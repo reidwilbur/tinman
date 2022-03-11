@@ -44,7 +44,8 @@ int writeString(display::Display& display, int col, uint32_t color, const String
   return charStart;
 }
 
-Ticker::Ticker(display::Display& display): DisplayRoutine(display) {
+Ticker::Ticker(display::Display& display): 
+DisplayRoutine(display, {"", 0x0, 0x0, 30, display::Mode::TICKER, false, 64}) {
   col = display.width() - 1;
 }
 
@@ -64,7 +65,7 @@ void sanitize(String& msg) {
   }
 }
 
-void Ticker::step(const display_config_server::DisplayConfig& config) {
+void Ticker::step(const display::DisplayConfig& config) {
   String configmsg = config.message;
   sanitize(configmsg);
   if (msgStr != configmsg) {

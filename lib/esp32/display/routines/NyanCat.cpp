@@ -87,7 +87,7 @@ struct Star {
 static Star stars[NUM_STARS];
 
 NyanCat::NyanCat(display::Display& display): 
-  DisplayRoutine(display), 
+  DisplayRoutine(display, {"", 0x0, 0x0, 7, display::Mode::NYANCAT, false, 64}), 
   catFrame(0),
   catPosR(1),
   catPosC(-CAT_FRAME_WIDTH) {
@@ -154,7 +154,7 @@ void drawStar(display::Display& display, const Star& star) {
   }
 }
 
-void NyanCat::step(const display_config_server::DisplayConfig& config) {
+void NyanCat::step(const display::DisplayConfig& config) {
   for (auto idx = 0; idx < display.size(); idx++) {
     display[idx] = BKG_COLOR;
   }

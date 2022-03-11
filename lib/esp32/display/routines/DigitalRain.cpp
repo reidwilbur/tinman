@@ -7,13 +7,14 @@ namespace display_routine {
 static const CRGB RAIN_DROP = CRGB(175,255,175);
 static const CRGB RAIN_TAIL = CRGB(27,130,39);
 
-DigitalRain::DigitalRain(display::Display& display): DisplayRoutine(display) {
+DigitalRain::DigitalRain(display::Display& display): 
+  DisplayRoutine(display, {"", 0x000000, 0x000000, 8, display::Mode::DIGITAL_RAIN, false, 64}) {
 }
 
 void DigitalRain::init() {
 }
 
-void DigitalRain::step(const display_config_server::DisplayConfig& config) {
+void DigitalRain::step(const display::DisplayConfig& config) {
   for (int row=display.height() - 1; row>=0; row--)
   {
     for (int col=0; col<display.width(); col++)

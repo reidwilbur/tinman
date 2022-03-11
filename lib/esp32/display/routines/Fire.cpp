@@ -4,7 +4,7 @@
 
 namespace display_routine {
 
-static const std::vector<CRGB> firePalette = {
+static const std::vector<CRGB> firePalette{
   CRGB(0,0,0),
   CRGB(35,10,7),
   CRGB(103,20,7),
@@ -44,7 +44,7 @@ void Fire::setFlame(uint row) {
 }
 
 Fire::Fire(display::Display& display): 
-  DisplayRoutine(display), 
+  DisplayRoutine(display, {"", 0x0, 0x0, 15, display::Mode::FIRE, false, 64}), 
   firePixels(std::vector<uint8_t>(display.width() * display.height())) {
 }
 
@@ -54,7 +54,7 @@ void Fire::init() {
   }
 }
 
-void Fire::step(const display_config_server::DisplayConfig& config) {
+void Fire::step(const display::DisplayConfig& config) {
   //debugPrint();
   for (auto row=0; row < display.height() - 1; row++) {
     for (auto col=0; col < display.width(); col++) {

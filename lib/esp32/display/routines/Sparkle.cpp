@@ -6,13 +6,14 @@ namespace display_routine {
 
 static const CRGB WHITE = CRGB(255,255,255);
 
-Sparkle::Sparkle(display::Display& display): DisplayRoutine(display) {
+Sparkle::Sparkle(display::Display& display): 
+  DisplayRoutine(display, {"", 0x0, 0x0, 25, display::Mode::SPARKLE, false, 64}) {
 }
 
 void Sparkle::init() {
 }
 
-void Sparkle::step(const display_config_server::DisplayConfig& config) {
+void Sparkle::step(const display::DisplayConfig& config) {
   for (int row = 0; row < display.height(); row++) {
     for (int col = 0; col < display.width(); col++) {
       uint8_t rand = random8(255);
