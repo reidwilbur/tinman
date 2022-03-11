@@ -6,10 +6,14 @@ import json
 import configparser
 import random
 from subprocess import Popen, PIPE
+from datetime import datetime
 
 config = configparser.ConfigParser()
 
 modes = ['digital_rain', 'sparkle', 'fire', 'static', 'kitt', 'nyancat']
+
+check_mtg_days = [day for day in range(1,6)]
+check_mtg_hours = [hour for hour in range(7, 16)]
 
 def main():
     config.read("tinman-automator.conf")
@@ -38,17 +42,22 @@ def main():
         parser.print_usage()
         exit(1)
 
+def working_hour():
+    now = datetime.now()
+    return (now.isoweekday() in check_mtg_days) and (now.hour in check_mtg_hours)
+
 def check_mtg():
-    mode = get_mode()
-    if (mode.lower() != "ticker"):
-        mtg_status_url = config["DEFAULT"]["mtg_status_url"]
-        with urlopen(mtg_status_url) as resp:
-            if resp.status == 200:
-                json_resp = json.loads(resp.read().decode())
-                if json_resp["data"]["inMtg"]:
-                    in_mtg()
-                else:
-                    random_mode()
+    if (working_hour()):
+        mode = get_mode()
+        if (mode.lower() != "ticker"):
+            mtg_status_url = config["DEFAULT"]["mtg_status_url"]
+            with urlopen(mtg_status_url) as resp:
+                if resp.status == 200:
+                    json_resp = json.loads(resp.read().decode())
+                    if json_resp["data"]["inMtg"]:
+                        in_mtg()
+                    else:
+                        random_mode()
 
 def random_mode():
     set_mode(random.choice(modes))
@@ -84,10 +93,11 @@ def cam_events():
     with Popen(log_cmd, stdout=PIPE) as cam_events:
         while cam_events.poll() == None:
             cam_event = str(cam_events.stdout.readline())
-            if ("kCameraStreamStart" in cam_event):
-                in_mtg()
-            elif ("kCameraStreamStop" in cam_event):
-                random_mode()
+            if (working_hour()):
+                if ("kCameraStreamStart" in cam_event):
+                    in_mtg()
+                elif ("kCameraStreamStop" in cam_event):
+                    random_mode()
 
 if __name__ == "__main__":
     main()
