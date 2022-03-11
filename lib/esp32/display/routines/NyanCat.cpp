@@ -154,7 +154,7 @@ void drawStar(display::Display& display, const Star& star) {
   }
 }
 
-void NyanCat::step(const display_config_server::DisplayConfig& config) {
+void NyanCat::step(const display::DisplayConfig& config) {
   for (auto idx = 0; idx < display.size(); idx++) {
     display[idx] = BKG_COLOR;
   }

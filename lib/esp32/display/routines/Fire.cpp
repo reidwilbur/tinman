@@ -54,7 +54,7 @@ void Fire::init() {
   }
 }
 
-void Fire::step(const display_config_server::DisplayConfig& config) {
+void Fire::step(const display::DisplayConfig& config) {
   //debugPrint();
   for (auto row=0; row < display.height() - 1; row++) {
     for (auto col=0; col < display.width(); col++) {

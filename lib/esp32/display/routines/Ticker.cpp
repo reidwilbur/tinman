@@ -64,7 +64,7 @@ void sanitize(String& msg) {
   }
 }
 
-void Ticker::step(const display_config_server::DisplayConfig& config) {
+void Ticker::step(const display::DisplayConfig& config) {
   String configmsg = config.message;
   sanitize(configmsg);
   if (msgStr != configmsg) {

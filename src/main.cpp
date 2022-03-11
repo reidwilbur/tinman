@@ -7,6 +7,7 @@
 
 using namespace display_config_server;
 using namespace display_routine;
+using namespace display;
 
 Mode lastMode = Mode::TICKER;
 display::Display disp = display::Display();

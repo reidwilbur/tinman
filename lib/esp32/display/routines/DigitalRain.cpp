@@ -13,7 +13,7 @@ DigitalRain::DigitalRain(display::Display& display): DisplayRoutine(display) {
 void DigitalRain::init() {
 }
 
-void DigitalRain::step(const display_config_server::DisplayConfig& config) {
+void DigitalRain::step(const display::DisplayConfig& config) {
   for (int row=display.height() - 1; row>=0; row--)
   {
     for (int col=0; col<display.width(); col++)

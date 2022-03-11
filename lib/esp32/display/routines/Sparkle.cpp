@@ -12,7 +12,7 @@ Sparkle::Sparkle(display::Display& display): DisplayRoutine(display) {
 void Sparkle::init() {
 }
 
-void Sparkle::step(const display_config_server::DisplayConfig& config) {
+void Sparkle::step(const display::DisplayConfig& config) {
   for (int row = 0; row < display.height(); row++) {
     for (int col = 0; col < display.width(); col++) {
       uint8_t rand = random8(255);

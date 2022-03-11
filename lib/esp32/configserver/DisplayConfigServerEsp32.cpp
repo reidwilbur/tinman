@@ -10,13 +10,22 @@
 
 namespace display_config_server {
 
+using namespace display;
+
 WebServer server(80);
+
+static const char FORMAT[] = "text/plain";
+
+static const String RESP_OK = String("OK\n");
+static const String RESP_BAD_REQ = String("Bad request\n");
 
 static const String ARG_MSG = String("msg");
 static const String ARG_SPEED = String("speed");
 static const String ARG_CLR = String("clr");
 static const String ARG_COLOR_CODE = String("clrcode");
 static const String ARG_MODE = String("mode");
+static const String ARG_SLEEP = String("sleep");
+static const String ARG_BRIGHT = String("bright");
 
 unsigned char h2int(char c) {
   if (c >= '0' && c <='9'){
@@ -75,7 +84,10 @@ int ConfigServer::start(display::Display& disp) {
   server.on("/speed", HTTP_POST, [this]() { postSpeed(); });
   server.on("/mode", HTTP_POST, [this]() { postMode(); });
   server.on("/mode", HTTP_GET, [this]() { getMode(); });
+  server.on("/sleep", HTTP_POST, [this]() { postSleep(); });
+  server.on("/sleep", HTTP_GET, [this]() { getSleep(); });
   server.onNotFound([this]() { handleNotFound(); });
+  server.enableDelay(false);
   server.begin();
 
   esp_err_t res = ESP_FAIL;
@@ -102,11 +114,26 @@ int ConfigServer::start(display::Display& disp) {
 }
 
 void ConfigServer::handleRoot() {
-  server.send(200, "text/plain", "hello monster\n");
+  server.send(200, FORMAT, "hello monster\n");
 }
 
 void ConfigServer::handleNotFound() {
-  server.send(404, "text/plain", "404: Not found\n");
+  server.send(404, FORMAT, "404: Not found\n");
+}
+
+void ConfigServer::postSleep() {
+  if (server.hasArg(ARG_SLEEP)) {
+    sscanf(server.arg(ARG_SLEEP).c_str(), "%b", &config.speed);
+  }
+  server.send(200, FORMAT, RESP_OK);
+}
+
+void ConfigServer::getSleep() {
+  if (config.sleep) {
+    server.send(200, FORMAT, "true\n");
+  } else {
+    server.send(200, FORMAT, "false\n");
+  }
 }
 
 boolean setSpeed(DisplayConfig& config) {
@@ -117,22 +144,31 @@ boolean setSpeed(DisplayConfig& config) {
   return false;
 }
 
+boolean setBrightness(DisplayConfig& config) {
+  if (server.hasArg(ARG_BRIGHT)) {
+    auto fields = sscanf(server.arg(ARG_BRIGHT).c_str(), "%u", &config.speed);
+    if (fields == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  return false;
+}
+
 void ConfigServer::postSpeed() {
   Serial.println("postSpeed");
   auto res = setSpeed(config);
-  Serial.println(config.speed);
   if (res) {
-    Serial.println("ok request");
-    server.send(200, "text/plain", "OK\n");
+    server.send(200, FORMAT, RESP_OK);
   } else {
-    Serial.println("bad request");
-    server.send(400, "text/plain", "Bad request\n");
+    server.send(400, FORMAT, RESP_BAD_REQ);
   }
 }
 
 void ConfigServer::getMode() {
   Serial.println("getMode");
-  server.send(200, "text/plain", ModeStrings[config.mode] + "\n");
+  server.send(200, FORMAT, ModeStrings[config.mode] + "\n");
 }
 
 static const std::map<String, uint32_t> COLOR_CODES{
@@ -150,6 +186,7 @@ void setTicker(DisplayConfig& config) {
   config.mode = Mode::TICKER;
   config.speed = 30;
   setSpeed(config);
+  setBrightness(config);
   if (server.hasArg(ARG_MSG)) {
     config.message = server.arg(ARG_MSG);
   }
@@ -169,36 +206,42 @@ void setDigRain(DisplayConfig& config) {
   config.mode = Mode::DIGITAL_RAIN;
   config.speed = 8;
   setSpeed(config);
+  setBrightness(config);
 }
 
 void setSparkle(DisplayConfig& config) {
   config.mode = Mode::SPARKLE;
   config.speed = 25;
   setSpeed(config);
+  setBrightness(config);
 }
 
 void setFire(DisplayConfig& config) {
   config.mode = Mode::FIRE;
   config.speed = 15;
   setSpeed(config);
+  setBrightness(config);
 }
 
 void setKitt(DisplayConfig& config) {
   config.mode = Mode::KITT;
   config.speed = 8;
   setSpeed(config);
+  setBrightness(config);
 }
 
 void setStatic(DisplayConfig& config) {
   config.mode = Mode::STATIC;
   config.speed = 30;
   setSpeed(config);
+  setBrightness(config);
 }
 
 void setNyanCat(DisplayConfig& config) {
   config.mode = Mode::NYANCAT;
   config.speed = 7;
   setSpeed(config);
+  setBrightness(config);
 }
 
 static const std::map<String, std::function<void(DisplayConfig&)>> MODE_HANDLERS{
@@ -219,20 +262,17 @@ void ConfigServer::postMode() {
     auto handler = MODE_HANDLERS.find(mode);
     if (handler != MODE_HANDLERS.end()) {
       handler->second(config);
-      Serial.println("ok request");
-      server.send(200, "text/plain", "OK\n");
+      server.send(200, FORMAT, RESP_OK);
     } else {
-      Serial.println("bad request, unsupported mode");
-      server.send(400, "text/plain", "Unsupported mode\n");
+      server.send(400, FORMAT, "Unsupported mode\n");
     }
   } else {
-    Serial.println("bad request, no mode");
-    server.send(400, "text/plain", "Missing mode\n");
+    server.send(400, FORMAT, "Missing mode\n");
   }
 }
 
 ConfigServer::ConfigServer(): 
-  config({ "", 0xffff00, 0x0, 15, Mode::TICKER }) {
+  config({ "", 0xffff00, 0x0, 15, Mode::TICKER, false, 64 }) {
 }
 
 DisplayConfig& ConfigServer::loop() {

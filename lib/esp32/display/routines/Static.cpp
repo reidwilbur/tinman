@@ -12,7 +12,7 @@ Static::Static(display::Display& display): DisplayRoutine(display) {
 void Static::init() {
 }
 
-void Static::step(const display_config_server::DisplayConfig& config) {
+void Static::step(const display::DisplayConfig& config) {
   for (auto idx = 0; idx < display.size(); idx++) {
     if (random8() > 128) {
       auto lum = random8();

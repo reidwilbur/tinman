@@ -34,7 +34,7 @@ void Kitt::drawLight() {
   }
 }
 
-void Kitt::step(const display_config_server::DisplayConfig& config) {
+void Kitt::step(const display::DisplayConfig& config) {
   for (auto row = 0; row < display.height(); row++) {
     for (auto col = 0; col < display.width(); col++) {
       display(row, col).nscale8(150);
