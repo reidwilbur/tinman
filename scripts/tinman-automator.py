@@ -56,7 +56,8 @@ class TinmanApi:
                 self.writeConfig()
 
     def random_mode(self):
-        self.set_mode(random.choice(self.modes))
+        rmodes = [mode for mode in self.modes if mode != 'static']
+        self.set_mode(random.choice(rmodes))
 
     def in_mtg(self):
         self.set_mode("ticker", msg="in meeting", color="0xffff00")
