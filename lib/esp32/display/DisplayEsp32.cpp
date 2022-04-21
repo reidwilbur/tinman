@@ -6,7 +6,7 @@ namespace display {
 static const size_t LED_WIDTH = 40;
 static const size_t LED_HEIGHT = 8;
 static const size_t LED_SIZE = LED_WIDTH * LED_HEIGHT;
-static const size_t BRIGHTNESS = 255;
+static const size_t BRIGHTNESS = 192;
 
 static CRGB leds[LED_WIDTH * LED_HEIGHT];
 

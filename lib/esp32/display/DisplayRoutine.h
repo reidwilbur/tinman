@@ -4,7 +4,6 @@
 #include "Display.h"
 #include "DisplayConfig.h"
 #include <vector>
-#include <option.h>
 
 namespace display_routine {
 
