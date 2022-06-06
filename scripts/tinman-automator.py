@@ -86,16 +86,16 @@ class TinmanApi:
             return resp.status == 200
 
     def cam_events(self):
-        log_cmd = ["log", "stream", "--predicate", 'eventMessage contains "Post event kCameraStream"']
+        log_cmd = ["log", "stream", "--style", "ndjson", "--predicate", 'subsystem contains "com.apple.UVCExtension" and composedMessage contains "Post PowerLog"']
         with Popen(log_cmd, stdout=PIPE) as cam_events:
             while cam_events.poll() == None:
                 cam_event = str(cam_events.stdout.readline())
                 self.getConfig()
                 if (self.working_hour()):
-                    if ("kCameraStreamStart" in cam_event):
+                    if ('On' in cam_event):
                         print("setting ticker to in meeting")
                         self.in_mtg()
-                    elif ("kCameraStreamStop" in cam_event):
+                    elif ('Off' in cam_event):
                         print("setting ticker to random mode")
                         self.random_mode()
                 self.config["state"]["last_write"] = sys._getframe().f_code.co_name
