@@ -123,6 +123,7 @@ public:
             case display::Mode::SPARKLE: return sparkle;
             case display::Mode::STATIC: return tvStatic;
             case display::Mode::TICKER: return ticker;
+            default: return rain;
         }
     }
 };
