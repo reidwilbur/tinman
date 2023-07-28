@@ -82,7 +82,6 @@ int ConfigServer::start(display::Display& disp) {
   disp.show();
 
   WiFi.disconnect();
-  WiFi.config(ip, gateway, subnet, dns);
   WiFi.begin(ssid, pswd);
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
