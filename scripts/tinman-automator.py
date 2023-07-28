@@ -15,9 +15,10 @@ class TinmanApi:
     check_mtg_days = [day for day in range(1,6)]
     check_mtg_hours = [hour for hour in range(7, 16)]
 
-    def __init__(self):
+    def __init__(self, args):
         self.config = configparser.ConfigParser()
         self.getConfig()
+        self.ticker_url = args.url if (args.url) else self.config["urls"]["ticker_url"]
 
     def getConfig(self):
         self.config.read(self.config_file_name)
@@ -28,8 +29,7 @@ class TinmanApi:
             self.config.write(file)
 
     def set_sleep(self, sleep):
-        ticker_url = self.config["urls"]["ticker_url"]
-        url = ticker_url + "sleep"
+        url = self.ticker_url + "sleep"
         fields = {"sleep": "true" if (sleep) else "false"}
         req = Request(url, urlencode(fields).encode())
         with urlopen(req) as resp:
@@ -63,8 +63,7 @@ class TinmanApi:
         self.set_mode("ticker", msg="in meeting", color="0xffff00")
 
     def get_mode(self):
-        ticker_url = self.config["urls"]["ticker_url"]
-        url = ticker_url + "mode"
+        url = self.ticker_url + "mode"
         with urlopen(url) as resp:
             if resp.status == 200:
                 return resp.read().decode().strip()
@@ -72,8 +71,7 @@ class TinmanApi:
                 return ""
 
     def set_mode(self, mode, msg=None, color=None, speed=None):
-        ticker_url = self.config["urls"]["ticker_url"]
-        url = ticker_url + "mode"
+        url = self.ticker_url + "mode"
         fields = {"mode": mode}
         if (msg != None):
             fields["msg"] = msg
@@ -102,17 +100,18 @@ class TinmanApi:
                 self.writeConfig()
 
 def main():
-    api = TinmanApi()
     parser = argparse.ArgumentParser()
+    parser.add_argument("--url", action="store", help="Url to use for connecting to tinman")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--inmtg", action="store_true", help="Set ticker to in meeting text scroll")
     group.add_argument("--checkmtg", action="store_true", help="Check if in mtg and set ticker to meeting text scroll")
     group.add_argument("--clear", action="store_true", help="Clear text on ticker")
     group.add_argument("--camevents", action="store_true", help="Attach to log and stream for camera events")
     group.add_argument("--ticker", action="store", help="Set ticker with message", metavar='<text>')
-    group.add_argument("--mode", choices=api.modes, help="Set ticker mode. Allowed values are " + ", ".join(api.modes), metavar="<mode>")
+    group.add_argument("--mode", choices=TinmanApi.modes, help="Set ticker mode. Allowed values are " + ", ".join(TinmanApi.modes), metavar="<mode>")
     group.add_argument("--sleep", action=argparse.BooleanOptionalAction, help="Set sleep mode (disables display)")
     args = parser.parse_args()
+    api = TinmanApi(args)
     if args.inmtg:
         api.in_mtg()
     elif args.checkmtg:
