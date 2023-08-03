@@ -2,6 +2,7 @@
 #define __DisplayConfig_h_INCLUDED__
 
 #include <Arduino.h>
+#include <vector>
 
 namespace display {
 
