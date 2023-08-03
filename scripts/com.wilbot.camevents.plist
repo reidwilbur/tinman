@@ -8,7 +8,7 @@
   <string>/Users/reid/dev/platformio/projects/tinman/scripts</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/python3</string>
+    <string>/opt/homebrew/bin/python3</string>
     <string>tinman-automator.py</string>
     <string>--camevents</string>
   </array>
