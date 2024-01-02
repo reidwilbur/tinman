@@ -8,12 +8,13 @@ import random
 from subprocess import Popen, PIPE
 from datetime import datetime
 import sys
+import json
 
 class TinmanApi:
     config_file_name = "tinman-automator.conf"
     modes = ['digital_rain', 'sparkle', 'fire', 'static', 'kitt', 'nyancat']
     check_mtg_days = [day for day in range(1,6)]
-    check_mtg_hours = [hour for hour in range(7, 16)]
+    check_mtg_hours = [hour for hour in range(7, 17)]
 
     def __init__(self, args):
         self.config = configparser.ConfigParser()
@@ -84,16 +85,20 @@ class TinmanApi:
             return resp.status == 200
 
     def cam_events(self):
-        log_cmd = ["log", "stream", "--style", "ndjson", "--predicate", 'subsystem contains "com.apple.UVCExtension"']
-        with Popen(log_cmd, stdout=PIPE) as cam_events:
-            while cam_events.poll() == None:
-                cam_event = str(cam_events.stdout.readline())
+        log_cmd = ["log", "stream", "--style", "ndjson", "--predicate", 'message BEGINSWITH "AppleH13CamIn::power_o"']
+        with Popen(log_cmd, stdout=PIPE, text=True) as cam_events:
+            cam_events.stdout.readline()
+            while cam_events.poll() is None:
+                line = cam_events.stdout.readline()[:-1]
+                if (line is None or not line.strip()):
+                  continue;
+                cam_event = json.loads(line)
                 self.getConfig()
                 if (self.working_hour()):
-                    if ('clientConnect' in cam_event):
+                    if (cam_event['eventMessage'] == 'AppleH13CamIn::power_on_hardware'):
                         print("setting ticker to in meeting")
                         self.in_mtg()
-                    elif ('clientDisconnect' in cam_event):
+                    elif (cam_event['eventMessage'] == 'AppleH13CamIn::power_off_hardware'):
                         print("setting ticker to random mode")
                         self.random_mode()
                 self.config["state"]["last_write"] = sys._getframe().f_code.co_name
